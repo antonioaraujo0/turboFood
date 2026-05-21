@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const ctrl = require('../controllers/produtoController');
+const ctrl = require("../controllers/produtoController");
 
 /**
  * @swagger
@@ -25,7 +25,7 @@ const ctrl = require('../controllers/produtoController');
  *       200:
  *         description: Lista de produtos em ordem alfabética por categoria
  */
-router.get('/', ctrl.listar);
+router.get("/", ctrl.listar);
 
 /**
  * @swagger
@@ -45,7 +45,7 @@ router.get('/', ctrl.listar);
  *       404:
  *         description: Produto não encontrado
  */
-router.get('/:id', ctrl.buscarPorId);
+router.get("/:id", ctrl.buscarPorId);
 
 /**
  * @swagger
@@ -87,7 +87,7 @@ router.get('/:id', ctrl.buscarPorId);
  *       404:
  *         description: Categoria não encontrada
  */
-router.post('/', ctrl.criar);
+router.post("/", ctrl.criar);
 
 /**
  * @swagger
@@ -126,7 +126,7 @@ router.post('/', ctrl.criar);
  *       404:
  *         description: Produto não encontrado
  */
-router.put('/:id', ctrl.atualizar);
+router.put("/:id", ctrl.atualizar);
 
 /**
  * @swagger
@@ -146,6 +146,6 @@ router.put('/:id', ctrl.atualizar);
  *       404:
  *         description: Produto não encontrado
  */
-router.delete('/:id', ctrl.remover);
+router.delete("/:id", ctrl.remover);
 
 module.exports = router;

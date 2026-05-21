@@ -2,7 +2,7 @@ const EntregaService = require('../services/EntregaService');
 
 const listar = async (req, res) => {
   try {
-    res.json(await EntregaService.findAll());
+    res.json(await EntregaService.listar());
   } catch (error) {
     res.status(500).json({ erro: 'Erro ao listar entregas', detalhe: error.message });
   }
@@ -10,7 +10,7 @@ const listar = async (req, res) => {
 
 const buscarPorId = async (req, res) => {
   try {
-    res.json(await EntregaService.findById(req.params.id));
+    res.json(await EntregaService.buscarPorId(req.params.id));
   } catch (error) {
     const status = error.message.includes('não encontrado') ? 404 : 500;
     res.status(status).json({ erro: error.message });
