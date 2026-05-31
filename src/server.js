@@ -17,6 +17,7 @@ const avaliacaoRoutes = require("./routes/avaliacaoRoutes");
 const authRoutes = require("./routes/authRoutes");
 const relatorioEntregaRoutes = require("./routes/relatorioEntregaRoutes");
 const relatorioAvaliacaoRoutes = require("./routes/relatorioAvaliacaoRoutes");
+const relatorioCadastroRoutes = require("./routes/relatorioCadastroRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -78,6 +79,9 @@ app.use("/auth", authRoutes);
 // Relatórios de entrega (REL01, REL02)
 app.use("/relatorios", relatorioEntregaRoutes);
 app.use("/relatorios/avaliacoes", relatorioAvaliacaoRoutes);
+
+// Relatórios de Listagens (RF45–RF52)
+app.use("/relatorios", relatorioCadastroRoutes);
 app.get("/", (req, res) => {
   res.json({
     sistema: "SGPE - TurboFood",
@@ -97,6 +101,20 @@ app.get("/", (req, res) => {
         pedidos: "/pedidos",
         pagamentos: "/pagamentos",
         entrega: "/entrega",
+      },
+      relatorios: {
+        entregasConcluidas: "/relatorios/entregas-concluidas",
+        horasTrabalhadas: "/relatorios/horas-trabalhadas",
+        avaliacoesPorBairro: "/relatorios/avaliacoes/bairro/:inicio/:termino",
+        desempenhoEntregadores: "/relatorios/avaliacoes/entregadores/:inicio/:termino",
+        categorias: "/relatorios/categorias",
+        produtos: "/relatorios/produtos",
+        clientes: "/relatorios/clientes",
+        entregadores: "/relatorios/entregadores",
+        veiculos: "/relatorios/veiculos",
+        pedidos: "/relatorios/pedidos",
+        avaliacoesCadastro: "/relatorios/avaliacoes-cadastro",
+        pagamentos: "/relatorios/pagamentos",
       },
     },
   });
