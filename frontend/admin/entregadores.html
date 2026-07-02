@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entregadores – TurboFood Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div><span class="sidebar-logo-name">TurboFood</span><span class="sidebar-logo-sub">Administrador</span></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Principal</div>
+      <a href="dashboard.html" class="sidebar-link"><span class="icon">🏠</span> Dashboard</a>
+      <a href="pedidos.html" class="sidebar-link"><span class="icon">📋</span> Pedidos <span class="sidebar-badge">5</span></a>
+      <a href="pagamentos.html" class="sidebar-link"><span class="icon">💳</span> Pagamentos</a>
+      <div class="sidebar-section-title">Cadastros</div>
+      <a href="categorias.html" class="sidebar-link"><span class="icon">🏷️</span> Categorias</a>
+      <a href="produtos.html" class="sidebar-link"><span class="icon">🍕</span> Produtos</a>
+      <a href="clientes.html" class="sidebar-link"><span class="icon">👥</span> Clientes</a>
+      <a href="entregadores.html" class="sidebar-link active"><span class="icon">🛵</span> Entregadores</a>
+      <a href="veiculos.html" class="sidebar-link"><span class="icon">🚗</span> Veículos</a>
+      <div class="sidebar-section-title">Relatórios</div>
+      <a href="avaliacoes.html" class="sidebar-link"><span class="icon">⭐</span> Avaliações</a>
+      <a href="relatorios.html" class="sidebar-link"><span class="icon">📊</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">RH</div>
+        <div><div class="sidebar-user-name">Roni Herculano</div><div class="sidebar-user-role">Gerente</div></div>
+        <a href="../index.html" class="sidebar-logout-btn">🚪</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+      <button class="sidebar-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div class="top-bar-title">
+        <h1>🛵 Entregadores</h1>
+        <p>Gerencie a equipe de entrega</p>
+      </div>
+      <div class="top-bar-right">
+        <button class="btn btn-primary" onclick="openModal('modal-entregador')">+ Novo Entregador</button>
+        <button class="icon-btn">🔔<span class="dot">3</span></button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Stats rápidas -->
+      <div class="stats-grid mb-4" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-card">
+          <div class="stat-icon green">🛵</div>
+          <div><div class="stat-value">6</div><div class="stat-label">Disponíveis</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">📦</div>
+          <div><div class="stat-value">2</div><div class="stat-label">Em Entrega</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon yellow">⏸</div>
+          <div><div class="stat-value">1</div><div class="stat-label">Inativos</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">👥</div>
+          <div><div class="stat-value">9</div><div class="stat-label">Total</div></div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Buscar entregador..." oninput="filterTable(this.value)">
+          </div>
+          <select class="form-control" style="width:auto">
+            <option>Todos os status</option>
+            <option>Disponível</option>
+            <option>Em Entrega</option>
+            <option>Inativo</option>
+          </select>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-secondary">📥 Exportar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="table" id="tableEntregadores">
+            <thead>
+              <tr>
+                <th>Entregador</th>
+                <th>CPF</th>
+                <th>CNH</th>
+                <th>Veículo</th>
+                <th>Avaliação</th>
+                <th>Entregas</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-orange">CF</div>
+                    <div>
+                      <div class="font-semibold">Carlos Ferreira</div>
+                      <div class="text-xs text-muted">📞 (28) 99111-2222</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-sm">111.222.333-44</td>
+                <td class="text-sm">ES 1234567</td>
+                <td class="text-sm">Honda CG 160 • ABC-1234</td>
+                <td>
+                  <div class="flex items-center gap-1">
+                    <span class="star">⭐</span>
+                    <strong class="text-sm">4.9</strong>
+                    <span class="text-xs text-muted">(127)</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-info">127</span></td>
+                <td><span class="badge badge-success">✓ Disponível</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-entregador')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-blue">LM</div>
+                    <div>
+                      <div class="font-semibold">Lucas Mendes</div>
+                      <div class="text-xs text-muted">📞 (28) 99333-4444</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-sm">222.333.444-55</td>
+                <td class="text-sm">ES 7654321</td>
+                <td class="text-sm">Honda Biz 125 • DEF-5678</td>
+                <td>
+                  <div class="flex items-center gap-1">
+                    <span class="star">⭐</span>
+                    <strong class="text-sm">4.7</strong>
+                    <span class="text-xs text-muted">(89)</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-info">89</span></td>
+                <td><span class="badge badge-info">🛵 Em Entrega</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-entregador')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-purple">PA</div>
+                    <div>
+                      <div class="font-semibold">Paulo Andrade</div>
+                      <div class="text-xs text-muted">📞 (28) 99555-6666</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-sm">333.444.555-66</td>
+                <td class="text-sm">ES 9988776</td>
+                <td class="text-sm">Yamaha Fan 125 • GHI-9012</td>
+                <td>
+                  <div class="flex items-center gap-1">
+                    <span class="star">⭐</span>
+                    <strong class="text-sm">4.5</strong>
+                    <span class="text-xs text-muted">(52)</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-info">52</span></td>
+                <td><span class="badge badge-info">🛵 Em Entrega</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-entregador')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-green">MR</div>
+                    <div>
+                      <div class="font-semibold">Marcos Rocha</div>
+                      <div class="text-xs text-muted">📞 (28) 99777-8888</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-sm">444.555.666-77</td>
+                <td class="text-sm">ES 1122334</td>
+                <td class="text-sm">Honda PCX 150 • JKL-3456</td>
+                <td>
+                  <div class="flex items-center gap-1">
+                    <span class="star">⭐</span>
+                    <strong class="text-sm">4.8</strong>
+                    <span class="text-xs text-muted">(203)</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-info">203</span></td>
+                <td><span class="badge badge-success">✓ Disponível</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-entregador')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar" style="background:rgba(239,68,68,0.15);color:var(--danger)">FS</div>
+                    <div>
+                      <div class="font-semibold">Fernando Santos</div>
+                      <div class="text-xs text-muted">📞 (28) 99999-0000</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-sm">555.666.777-88</td>
+                <td class="text-sm">ES 5544332</td>
+                <td class="text-sm">Titan 160 • MNO-7890</td>
+                <td>
+                  <div class="flex items-center gap-1">
+                    <span class="star">⭐</span>
+                    <strong class="text-sm">1.8</strong>
+                    <span class="text-xs text-muted">(61)</span>
+                    <span class="badge badge-danger" style="font-size:0.65rem">⚠ Alerta</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-info">61</span></td>
+                <td><span class="badge badge-warning">⏸ Inativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-entregador')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="pagination-info">Mostrando 5 de 9 entregadores</span>
+          <div class="pagination-btns">
+            <button class="page-btn" disabled>‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL Entregador -->
+<div class="modal-overlay" id="modal-entregador">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title"><span>🛵</span> Cadastrar Entregador</span>
+      <button class="modal-close" onclick="closeModal('modal-entregador')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label req">Nome Completo</label>
+          <input type="text" class="form-control" placeholder="Nome completo">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">CPF</label>
+          <input type="text" class="form-control" placeholder="000.000.000-00">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">CNH</label>
+          <input type="text" class="form-control" placeholder="Número da CNH">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Categoria CNH</label>
+          <select class="form-control">
+            <option>A</option><option>AB</option><option>B</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data de Validade CNH</label>
+          <input type="date" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Telefone</label>
+          <input type="tel" class="form-control" placeholder="(28) 9 9999-9999">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">E-mail</label>
+          <input type="email" class="form-control" placeholder="email@exemplo.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Veículo</label>
+          <select class="form-control">
+            <option value="">Nenhum veículo vinculado</option>
+            <option>Honda CG 160 – ABC-1234</option>
+            <option>Honda Biz 125 – DEF-5678</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-control">
+            <option>✓ Disponível</option>
+            <option>🛵 Em Entrega</option>
+            <option>⏸ Inativo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Senha de Acesso</label>
+          <input type="password" class="form-control" placeholder="Mínimo 8 caracteres">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-entregador')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-entregador')">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('mobile-overlay');
+    sidebar.classList.toggle('mobile-open');
+    if (overlay) overlay.classList.toggle('mobile-overlay-show');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('mobile-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        overlay.classList.remove('mobile-overlay-show');
+      });
+    }
+  });
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  function filterTable(val) {
+    document.querySelectorAll('#tableEntregadores tbody tr').forEach(row => {
+      row.style.display = !val || row.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+</script>
+<div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+</body>
+</html>

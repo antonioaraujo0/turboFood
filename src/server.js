@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const swaggerJsdoc = require("swagger-jsdoc");
@@ -22,7 +23,12 @@ const relatorioCadastroRoutes = require("./routes/relatorioCadastroRoutes");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// CORS: em produção, restringe à(s) origem(ns) do frontend via CORS_ORIGIN
+// (lista separada por vírgula). Sem a variável, libera todas as origens.
+const corsOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim())
+  : "*";
+app.use(cors({ origin: corsOrigins }));
 app.use(express.json());
 
 const swaggerOptions = {

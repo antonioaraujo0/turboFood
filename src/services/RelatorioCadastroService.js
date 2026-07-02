@@ -6,120 +6,138 @@
  * RF45 – Listar Categorias           (ordem personalizada → alfabética)
  * RF46 – Listar Produtos             (alfabético por categoria)
  * RF47 – Listar Clientes             (alfabético)
- * RF48 – Listar Entregadores         (alfabético)
+ * RF48 – Listar Entregadores         (alfabético) — status, média e total de avaliações
  * RF49 – Listar Veículos             (alfabético por modelo)
  * RF50 – Listar Pedidos              (data decrescente)
  * RF51 – Listar Avaliações           (data decrescente)
  * RF52 – Listar Pagamentos           (data decrescente)
  *
- * Padrão Código B:
- *  - sequelize importado de '../models' (não de '../config/database')
- *  - QueryTypes importado de 'sequelize' (pacote)
- *  - Nomes de tabelas em snake_case conforme definido nos models do Código B
- *  - Funções exportadas como módulo (não como classe estática), igual ao
- *    RelatorioEntregaService.js do Código B
+ * Reescrito com o ORM do Sequelize e agregação em JS — portável entre Postgres
+ * (Render) e SQLite (dev). Não usa SQL cru (que quebrava no Postgres por causa
+ * de identificadores camelCase sem aspas).
  */
 
-const { QueryTypes } = require('sequelize');
-const { sequelize } = require('../models');
+const { Op, fn, col } = require("sequelize");
+const {
+  Categoria,
+  Produto,
+  Cliente,
+  Entregador,
+  Veiculo,
+  Pedido,
+  ItemPedido,
+  Entrega,
+  Pagamento,
+  Avaliacao,
+} = require("../models");
+
+const num = (v) => Number(v || 0);
+const media = (soma, qtd) => (qtd ? Number((soma / qtd).toFixed(2)) : null);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RF45 – Listar Categorias
-//
-// Campos: nome, descrição, ícone, ativo, ordem.
-// Agrega: total de produtos e total de produtos disponíveis por categoria.
-// Ordenado por campo `ordem` (nulo por último) e depois alfabeticamente.
 // ─────────────────────────────────────────────────────────────────────────────
 async function listarCategorias({ ativo } = {}) {
-  const condicoes = [];
-  const replacements = {};
+  const where = {};
+  if (ativo !== undefined) where.ativo = ativo === "true" || ativo === true;
 
-  if (ativo !== undefined) {
-    condicoes.push('c.ativo = :ativo');
-    replacements.ativo = ativo === 'true' || ativo === true ? 1 : 0;
-  }
+  const registros = await Categoria.findAll({
+    where,
+    include: [{ association: "produtos", attributes: ["id", "disponivel"] }],
+  });
 
-  const clausulaWhere = condicoes.length ? `WHERE ${condicoes.join(' AND ')}` : '';
-
-  const categorias = await sequelize.query(
-    `SELECT
-       c.id                                                          AS id,
-       c.nome                                                        AS nome,
-       c.descricao                                                   AS descricao,
-       c.icone                                                       AS icone,
-       c.ativo                                                       AS ativo,
-       c.ordem                                                       AS ordem,
-       COUNT(p.id)                                                   AS totalProdutos,
-       SUM(CASE WHEN p.disponivel = 1 AND p.deletedAt IS NULL
-                THEN 1 ELSE 0 END)                                  AS produtosDisponiveis,
-       c.createdAt                                                   AS criadoEm
-     FROM categorias c
-     LEFT JOIN produtos p ON p.categoriaId = c.id AND p.deletedAt IS NULL
-     ${clausulaWhere}
-     GROUP BY c.id, c.nome, c.descricao, c.icone, c.ativo, c.ordem, c.createdAt
-     ORDER BY
-       CASE WHEN c.ordem IS NULL THEN 1 ELSE 0 END,
-       c.ordem ASC,
-       c.nome  ASC`,
-    { replacements, type: QueryTypes.SELECT }
-  );
+  const categorias = registros
+    .map((c) => {
+      const j = c.toJSON();
+      const produtos = j.produtos || [];
+      return {
+        id: j.id,
+        nome: j.nome,
+        descricao: j.descricao,
+        icone: j.icone,
+        ativo: j.ativo,
+        ordem: j.ordem,
+        totalProdutos: produtos.length,
+        produtosDisponiveis: produtos.filter((p) => p.disponivel).length,
+        criadoEm: j.createdAt,
+      };
+    })
+    .sort((a, b) => {
+      if (a.ordem == null && b.ordem != null) return 1;
+      if (a.ordem != null && b.ordem == null) return -1;
+      if (a.ordem != null && b.ordem != null && a.ordem !== b.ordem)
+        return a.ordem - b.ordem;
+      return (a.nome || "").localeCompare(b.nome || "");
+    });
 
   return {
-    filtros: { ativo: ativo !== undefined ? ativo : 'todos' },
+    filtros: { ativo: ativo !== undefined ? ativo : "todos" },
     total: categorias.length,
     categorias,
   };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// RF46 – Listar Produtos
-//
-// Campos: nome, descrição, preço, estoque, disponibilidade, categoria.
-// Agrega: total de vendas e quantidade vendida por produto.
-// Filtros: categoriaId, disponivel.
-// Ordenado alfabeticamente dentro de cada categoria.
+// RF46 – Listar Produtos (ativos e inativos)
 // ─────────────────────────────────────────────────────────────────────────────
 async function listarProdutos({ categoriaId, disponivel } = {}) {
-  const condicoes = ['p.deletedAt IS NULL'];
-  const replacements = {};
-
-  if (categoriaId) {
-    condicoes.push('p.categoriaId = :categoriaId');
-    replacements.categoriaId = Number(categoriaId);
-  }
-
+  const where = {};
+  if (categoriaId) where.categoriaId = Number(categoriaId);
   if (disponivel !== undefined) {
-    condicoes.push('p.disponivel = :disponivel');
-    replacements.disponivel = disponivel === 'true' || disponivel === true ? 1 : 0;
+    where.disponivel = disponivel === "true" || disponivel === true;
   }
 
-  const clausulaWhere = `WHERE ${condicoes.join(' AND ')}`;
+  const registros = await Produto.findAll({
+    where,
+    include: [{ association: "categoria", attributes: ["id", "nome"] }],
+  });
 
-  const produtos = await sequelize.query(
-    `SELECT
-       p.id                                AS id,
-       p.nome                              AS nome,
-       p.descricao                         AS descricao,
-       p.preco                             AS preco,
-       p.estoque                           AS estoque,
-       p.disponivel                        AS disponivel,
-       p.urlImagem                         AS urlImagem,
-       c.id                                AS categoriaId,
-       c.nome                              AS categoria,
-       COUNT(ip.id)                        AS totalVendas,
-       SUM(COALESCE(ip.quantidade, 0))     AS quantidadeVendida,
-       p.createdAt                         AS criadoEm
-     FROM produtos p
-     INNER JOIN categorias c   ON c.id  = p.categoriaId
-     LEFT JOIN  itens_pedido ip ON ip.produtoId = p.id
-     ${clausulaWhere}
-     GROUP BY p.id, p.nome, p.descricao, p.preco, p.estoque, p.disponivel,
-              p.urlImagem, c.id, c.nome, p.createdAt
-     ORDER BY c.nome ASC, p.nome ASC`,
-    { replacements, type: QueryTypes.SELECT }
-  );
+  // Vendas por produto (COUNT de itens e SUM de quantidade)
+  const vendas = await ItemPedido.findAll({
+    attributes: [
+      "produtoId",
+      [fn("COUNT", col("id")), "totalVendas"],
+      [fn("SUM", col("quantidade")), "quantidadeVendida"],
+    ],
+    group: ["produtoId"],
+    raw: true,
+  });
+  const vendasPorProduto = {};
+  for (const v of vendas) {
+    vendasPorProduto[v.produtoId] = {
+      totalVendas: num(v.totalVendas),
+      quantidadeVendida: num(v.quantidadeVendida),
+    };
+  }
 
-  // Totalizadores por categoria para o resumo executivo
+  const produtos = registros
+    .map((p) => {
+      const j = p.toJSON();
+      const venda = vendasPorProduto[j.id] || {
+        totalVendas: 0,
+        quantidadeVendida: 0,
+      };
+      return {
+        id: j.id,
+        nome: j.nome,
+        descricao: j.descricao,
+        preco: j.preco,
+        estoque: j.estoque,
+        disponivel: j.disponivel,
+        urlImagem: j.urlImagem,
+        categoriaId: j.categoria ? j.categoria.id : j.categoriaId,
+        categoria: j.categoria ? j.categoria.nome : null,
+        totalVendas: venda.totalVendas,
+        quantidadeVendida: venda.quantidadeVendida,
+        criadoEm: j.createdAt,
+      };
+    })
+    .sort(
+      (a, b) =>
+        (a.categoria || "").localeCompare(b.categoria || "") ||
+        (a.nome || "").localeCompare(b.nome || "")
+    );
+
   const porCategoria = {};
   for (const prod of produtos) {
     if (!porCategoria[prod.categoria]) {
@@ -130,13 +148,13 @@ async function listarProdutos({ categoriaId, disponivel } = {}) {
       };
     }
     porCategoria[prod.categoria].totalProdutos += 1;
-    porCategoria[prod.categoria].estoqueTotal += Number(prod.estoque);
+    porCategoria[prod.categoria].estoqueTotal += num(prod.estoque);
   }
 
   return {
     filtros: {
       categoriaId: categoriaId ? Number(categoriaId) : null,
-      disponivel: disponivel !== undefined ? disponivel : 'todos',
+      disponivel: disponivel !== undefined ? disponivel : "todos",
     },
     total: produtos.length,
     resumoPorCategoria: Object.values(porCategoria),
@@ -146,57 +164,55 @@ async function listarProdutos({ categoriaId, disponivel } = {}) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RF47 – Listar Clientes
-//
-// Campos: nomeCompleto, email, telefone, cpf, ativo.
-// Agrega: total de pedidos e valor total gasto por cliente.
-// Filtros: ativo, busca (nome ou e-mail).
-// Ordenado alfabeticamente.
 // ─────────────────────────────────────────────────────────────────────────────
 async function listarClientes({ ativo, busca } = {}) {
-  const condicoes = [];
-  const replacements = {};
-
-  if (ativo !== undefined) {
-    condicoes.push('c.ativo = :ativo');
-    replacements.ativo = ativo === 'true' || ativo === true ? 1 : 0;
-  }
-
+  const where = {};
+  if (ativo !== undefined) where.ativo = ativo === "true" || ativo === true;
   if (busca) {
-    condicoes.push('(c.nomeCompleto LIKE :busca OR c.email LIKE :busca)');
-    replacements.busca = `%${busca}%`;
+    where[Op.or] = [
+      { nomeCompleto: { [Op.like]: `%${busca}%` } },
+      { email: { [Op.like]: `%${busca}%` } },
+    ];
   }
 
-  const clausulaWhere = condicoes.length ? `WHERE ${condicoes.join(' AND ')}` : '';
+  const registros = await Cliente.findAll({
+    where,
+    attributes: { exclude: ["senha"] },
+    include: [
+      { association: "pedidos", attributes: ["id", "status", "total", "createdAt"] },
+    ],
+    order: [["nomeCompleto", "ASC"]],
+  });
 
-  const clientes = await sequelize.query(
-    `SELECT
-       c.id                                                          AS id,
-       c.nomeCompleto                                                AS nomeCompleto,
-       c.email                                                       AS email,
-       c.telefone                                                    AS telefone,
-       c.cpf                                                         AS cpf,
-       c.ativo                                                       AS ativo,
-       COUNT(p.id)                                                   AS totalPedidos,
-       SUM(CASE WHEN p.status NOT IN ('cancelado')
-                THEN p.total ELSE 0 END)                            AS totalGasto,
-       MAX(p.createdAt)                                              AS ultimoPedidoEm,
-       c.createdAt                                                   AS clienteDesde
-     FROM clientes c
-     LEFT JOIN pedidos p ON p.clienteId = c.id
-     ${clausulaWhere}
-     GROUP BY c.id, c.nomeCompleto, c.email, c.telefone, c.cpf, c.ativo, c.createdAt
-     ORDER BY c.nomeCompleto ASC`,
-    { replacements, type: QueryTypes.SELECT }
-  );
+  const clientes = registros.map((c) => {
+    const j = c.toJSON();
+    const pedidos = j.pedidos || [];
+    const totalGasto = pedidos
+      .filter((p) => p.status !== "cancelado")
+      .reduce((s, p) => s + num(p.total), 0);
+    const ultimo = pedidos.reduce(
+      (max, p) => (!max || new Date(p.createdAt) > new Date(max) ? p.createdAt : max),
+      null
+    );
+    return {
+      id: j.id,
+      nomeCompleto: j.nomeCompleto,
+      email: j.email,
+      telefone: j.telefone,
+      cpf: j.cpf,
+      ativo: j.ativo,
+      totalPedidos: pedidos.length,
+      totalGasto: totalGasto.toFixed(2),
+      ultimoPedidoEm: ultimo,
+      clienteDesde: j.createdAt,
+    };
+  });
 
   const totalAtivos = clientes.filter((c) => c.ativo).length;
-  const receitaTotal = clientes.reduce((s, c) => s + Number(c.totalGasto || 0), 0);
+  const receitaTotal = clientes.reduce((s, c) => s + num(c.totalGasto), 0);
 
   return {
-    filtros: {
-      ativo: ativo !== undefined ? ativo : 'todos',
-      busca: busca || null,
-    },
+    filtros: { ativo: ativo !== undefined ? ativo : "todos", busca: busca || null },
     totalClientes: clientes.length,
     totalAtivos,
     totalInativos: clientes.length - totalAtivos,
@@ -206,223 +222,230 @@ async function listarClientes({ ativo, busca } = {}) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// RF48 – Listar Entregadores
-//
-// Campos: nomeCompleto, email, telefone, tipoVeiculo, status.
-// Agrega: total de entregas, médias de avaliação e avaliações negativas.
-// Filtros: status, busca (nome).
-// Ordenado alfabeticamente.
+// RF48 – Listar Entregadores (relatório de entregador)
+// Mostra status (ativos/inativos), média de notas e total de avaliações.
 // ─────────────────────────────────────────────────────────────────────────────
 async function listarEntregadores({ status, busca } = {}) {
-  const condicoes = [];
-  const replacements = {};
+  const where = {};
+  if (status) where.status = status;
+  if (busca) where.nomeCompleto = { [Op.like]: `%${busca}%` };
 
-  if (status) {
-    condicoes.push('e.status = :status');
-    replacements.status = status;
+  const registros = await Entregador.findAll({
+    where,
+    attributes: { exclude: ["senha"] },
+    include: [
+      { association: "veiculo", attributes: ["id", "modelo", "placa"] },
+    ],
+    order: [["nomeCompleto", "ASC"]],
+  });
+
+  // Métricas por entregador: entregas ENTREGUE e avaliações (via entrega→pedidos→avaliacao)
+  const entregas = await Entrega.findAll({
+    where: { status: "ENTREGUE" },
+    attributes: ["id", "entregadorId"],
+    include: [
+      {
+        association: "pedidos",
+        attributes: ["id"],
+        include: [
+          { association: "avaliacao", attributes: ["notaComida", "notaEntrega"] },
+        ],
+      },
+    ],
+  });
+
+  const metricas = {};
+  const garantir = (id) => {
+    if (!metricas[id])
+      metricas[id] = {
+        totalEntregas: 0,
+        somaEntrega: 0,
+        somaComida: 0,
+        qtdAvaliacoes: 0,
+        negativas: 0,
+      };
+    return metricas[id];
+  };
+
+  for (const e of entregas) {
+    const j = e.toJSON();
+    const m = garantir(j.entregadorId);
+    m.totalEntregas += 1;
+    for (const p of j.pedidos || []) {
+      if (p.avaliacao) {
+        m.qtdAvaliacoes += 1;
+        m.somaEntrega += num(p.avaliacao.notaEntrega);
+        m.somaComida += num(p.avaliacao.notaComida);
+        if (num(p.avaliacao.notaEntrega) < 2) m.negativas += 1;
+      }
+    }
   }
 
-  if (busca) {
-    condicoes.push('e.nomeCompleto LIKE :busca');
-    replacements.busca = `%${busca}%`;
-  }
+  const entregadores = registros.map((e) => {
+    const j = e.toJSON();
+    const m = metricas[j.id] || {
+      totalEntregas: 0,
+      somaEntrega: 0,
+      somaComida: 0,
+      qtdAvaliacoes: 0,
+      negativas: 0,
+    };
+    return {
+      id: j.id,
+      nomeCompleto: j.nomeCompleto,
+      email: j.email,
+      telefone: j.telefone,
+      tipoVeiculo: j.tipoVeiculo,
+      status: j.status,
+      totalEntregas: m.totalEntregas,
+      totalAvaliacoes: m.qtdAvaliacoes,
+      mediaAvaliacaoEntrega: media(m.somaEntrega, m.qtdAvaliacoes),
+      mediaAvaliacaoComida: media(m.somaComida, m.qtdAvaliacoes),
+      avaliacoesNegativas: m.negativas,
+      veiculoModelo: j.veiculo ? j.veiculo.modelo : null,
+      veiculoPlaca: j.veiculo ? j.veiculo.placa : null,
+      cadastradoEm: j.createdAt,
+    };
+  });
 
-  const clausulaWhere = condicoes.length ? `WHERE ${condicoes.join(' AND ')}` : '';
-
-  const entregadores = await sequelize.query(
-    `SELECT
-       e.id                                                          AS id,
-       e.nomeCompleto                                                AS nomeCompleto,
-       e.email                                                       AS email,
-       e.telefone                                                    AS telefone,
-       e.tipoVeiculo                                                 AS tipoVeiculo,
-       e.status                                                      AS status,
-       COUNT(DISTINCT ent.id)                                        AS totalEntregas,
-       ROUND(AVG(av.notaEntrega), 2)                                 AS mediaAvaliacaoEntrega,
-       ROUND(AVG(av.notaComida),  2)                                 AS mediaAvaliacaoComida,
-       SUM(CASE WHEN av.notaEntrega < 2 THEN 1 ELSE 0 END)          AS avaliacoesNegativas,
-       v.modelo                                                      AS veiculoModelo,
-       v.placa                                                       AS veiculoPlaca,
-       e.createdAt                                                   AS cadastradoEm
-     FROM entregadores e
-     LEFT JOIN entregas    ent ON ent.entregadorId = e.id AND ent.status = 'ENTREGUE'
-     LEFT JOIN pedidos     p   ON p.id             = ent.pedidoId
-     LEFT JOIN avaliacoes  av  ON av.pedidoId      = p.id
-     LEFT JOIN veiculos    v   ON v.entregadorId   = e.id
-     ${clausulaWhere}
-     GROUP BY e.id, e.nomeCompleto, e.email, e.telefone, e.tipoVeiculo,
-              e.status, v.modelo, v.placa, e.createdAt
-     ORDER BY e.nomeCompleto ASC`,
-    { replacements, type: QueryTypes.SELECT }
-  );
-
-  const totalDisponiveis = entregadores.filter((e) => e.status === 'ativo').length;
-  const totalEmEntrega   = entregadores.filter((e) => e.status === 'em_entrega').length;
+  const totalAtivos = entregadores.filter((e) => e.status === "ativo").length;
+  const totalEmEntrega = entregadores.filter((e) => e.status === "em_entrega").length;
+  const totalInativos = entregadores.filter((e) => e.status === "inativo").length;
 
   return {
-    filtros: {
-      status: status || 'todos',
-      busca: busca || null,
-    },
+    filtros: { status: status || "todos", busca: busca || null },
     totalEntregadores: entregadores.length,
-    totalDisponiveis,
+    totalAtivos,
     totalEmEntrega,
-    totalInativos: entregadores.length - totalDisponiveis - totalEmEntrega,
-    totalEntregasGeral: entregadores.reduce((s, e) => s + Number(e.totalEntregas || 0), 0),
+    totalInativos,
+    totalEntregasGeral: entregadores.reduce((s, e) => s + e.totalEntregas, 0),
     entregadores,
   };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RF49 – Listar Veículos
-//
-// Campos: tipo, modelo, placa, cor, ano, status, renavan.
-// Inclui: entregador atribuído.
-// Filtros: status, tipo.
-// Ordenado alfabeticamente por modelo.
 // ─────────────────────────────────────────────────────────────────────────────
 async function listarVeiculos({ status, tipo } = {}) {
-  const condicoes = [];
-  const replacements = {};
+  const where = {};
+  if (status) where.status = status;
+  if (tipo) where.tipo = tipo;
 
-  if (status) {
-    condicoes.push('v.status = :status');
-    replacements.status = status;
-  }
+  const registros = await Veiculo.findAll({
+    where,
+    include: [
+      { association: "entregador", attributes: ["id", "nomeCompleto", "status"] },
+    ],
+    order: [["modelo", "ASC"]],
+  });
 
-  if (tipo) {
-    condicoes.push('v.tipo = :tipo');
-    replacements.tipo = tipo;
-  }
+  const veiculos = registros.map((v) => {
+    const j = v.toJSON();
+    return {
+      id: j.id,
+      tipo: j.tipo,
+      modelo: j.modelo,
+      placa: j.placa,
+      cor: j.cor,
+      ano: j.ano,
+      status: j.status,
+      renavan: j.renavan,
+      entregadorId: j.entregador ? j.entregador.id : j.entregadorId,
+      entregadorNome: j.entregador ? j.entregador.nomeCompleto : null,
+      entregadorStatus: j.entregador ? j.entregador.status : null,
+      cadastradoEm: j.createdAt,
+    };
+  });
 
-  const clausulaWhere = condicoes.length ? `WHERE ${condicoes.join(' AND ')}` : '';
-
-  const veiculos = await sequelize.query(
-    `SELECT
-       v.id                        AS id,
-       v.tipo                      AS tipo,
-       v.modelo                    AS modelo,
-       v.placa                     AS placa,
-       v.cor                       AS cor,
-       v.ano                       AS ano,
-       v.status                    AS status,
-       v.renavan                   AS renavan,
-       e.id                        AS entregadorId,
-       e.nomeCompleto              AS entregadorNome,
-       e.status                    AS entregadorStatus,
-       v.createdAt                 AS cadastradoEm
-     FROM veiculos v
-     LEFT JOIN entregadores e ON e.id = v.entregadorId
-     ${clausulaWhere}
-     ORDER BY v.modelo ASC`,
-    { replacements, type: QueryTypes.SELECT }
-  );
-
-  const totalDisponiveis = veiculos.filter((v) => v.status === 'disponivel').length;
-  const totalEmUso       = veiculos.filter((v) => v.status === 'em_uso').length;
-  const totalManutencao  = veiculos.filter((v) => v.status === 'manutencao').length;
+  const totalDisponiveis = veiculos.filter((v) => v.status === "disponivel").length;
+  const totalEmUso = veiculos.filter((v) => v.status === "em_uso").length;
+  const totalManutencao = veiculos.filter((v) => v.status === "manutencao").length;
 
   return {
-    filtros: {
-      status: status || 'todos',
-      tipo: tipo || 'todos',
-    },
+    filtros: { status: status || "todos", tipo: tipo || "todos" },
     totalVeiculos: veiculos.length,
     totalDisponiveis,
     totalEmUso,
     totalManutencao,
-    totalIndisponiveis: veiculos.length - totalDisponiveis - totalEmUso - totalManutencao,
+    totalIndisponiveis:
+      veiculos.length - totalDisponiveis - totalEmUso - totalManutencao,
     veiculos,
   };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RF50 – Listar Pedidos
-//
-// Campos: id, status, total, formaPagamento, cliente, endereço, itens, pagamento.
-// Filtros: clienteId, status, dataInicio, dataFim, busca (id ou nome do cliente).
-// Ordenado por data decrescente.
-//
-// Tabela de endereço no Código B: enderecos_entrega (FK: enderecoEntregaId)
 // ─────────────────────────────────────────────────────────────────────────────
 async function listarPedidos({ clienteId, status, dataInicio, dataFim, busca } = {}) {
-  const condicoes = [];
-  const replacements = {};
-
-  if (clienteId) {
-    condicoes.push('p.clienteId = :clienteId');
-    replacements.clienteId = Number(clienteId);
+  const where = {};
+  if (clienteId) where.clienteId = Number(clienteId);
+  if (status) where.status = status;
+  if (dataInicio || dataFim) {
+    where.createdAt = {};
+    if (dataInicio) where.createdAt[Op.gte] = `${dataInicio} 00:00:00`;
+    if (dataFim) where.createdAt[Op.lte] = `${dataFim} 23:59:59`;
   }
 
-  if (status) {
-    condicoes.push('p.status = :status');
-    replacements.status = status;
-  }
+  const registros = await Pedido.findAll({
+    where,
+    order: [["createdAt", "DESC"]],
+    include: [
+      { association: "cliente", attributes: ["id", "nomeCompleto", "telefone"] },
+      { association: "enderecoEntrega" },
+      { association: "itens", attributes: ["id", "quantidade"] },
+      { association: "pagamentos", attributes: ["status", "forma"] },
+    ],
+  });
 
-  if (dataInicio) {
-    condicoes.push('p.createdAt >= :dataInicio');
-    replacements.dataInicio = `${dataInicio} 00:00:00`;
-  }
-
-  if (dataFim) {
-    condicoes.push('p.createdAt <= :dataFim');
-    replacements.dataFim = `${dataFim} 23:59:59`;
-  }
+  let pedidos = registros.map((r) => {
+    const j = r.toJSON();
+    const itens = j.itens || [];
+    const aprovado = (j.pagamentos || []).find((pg) => pg.status === "aprovado");
+    const ee = j.enderecoEntrega || {};
+    return {
+      id: j.id,
+      status: j.status,
+      total: j.total,
+      formaPagamento: j.formaPagamento,
+      observacao: j.observacao,
+      clienteId: j.cliente ? j.cliente.id : j.clienteId,
+      clienteNome: j.cliente ? j.cliente.nomeCompleto : null,
+      clienteTelefone: j.cliente ? j.cliente.telefone : null,
+      enderecoRua: ee.rua || null,
+      enderecoNumero: ee.numero || null,
+      enderecoBairro: ee.bairro || null,
+      enderecoCidade: ee.cidade || null,
+      totalItens: itens.length,
+      quantidadeItens: itens.reduce((s, i) => s + num(i.quantidade), 0),
+      pagamentoStatus: aprovado ? aprovado.status : null,
+      pagamentoForma: aprovado ? aprovado.forma : null,
+      criadoEm: j.createdAt,
+      atualizadoEm: j.updatedAt,
+    };
+  });
 
   if (busca) {
-    condicoes.push('(CAST(p.id AS TEXT) LIKE :busca OR c.nomeCompleto LIKE :busca)');
-    replacements.busca = `%${busca}%`;
+    const termo = String(busca).toLowerCase();
+    pedidos = pedidos.filter(
+      (p) =>
+        String(p.id).includes(termo) ||
+        (p.clienteNome || "").toLowerCase().includes(termo)
+    );
   }
 
-  const clausulaWhere = condicoes.length ? `WHERE ${condicoes.join(' AND ')}` : '';
-
-  const pedidos = await sequelize.query(
-    `SELECT
-       p.id                        AS id,
-       p.status                    AS status,
-       p.total                     AS total,
-       p.formaPagamento            AS formaPagamento,
-       p.observacao                AS observacao,
-       c.id                        AS clienteId,
-       c.nomeCompleto              AS clienteNome,
-       c.telefone                  AS clienteTelefone,
-       ee.rua                      AS enderecoRua,
-       ee.numero                   AS enderecoNumero,
-       ee.bairro                   AS enderecoBairro,
-       ee.cidade                   AS enderecoCidade,
-       COUNT(ip.id)                AS totalItens,
-       SUM(ip.quantidade)          AS quantidadeItens,
-       pg.status                   AS pagamentoStatus,
-       pg.forma                    AS pagamentoForma,
-       p.createdAt                 AS criadoEm,
-       p.updatedAt                 AS atualizadoEm
-     FROM pedidos p
-     INNER JOIN clientes           c  ON c.id  = p.clienteId
-     INNER JOIN enderecos_entrega  ee ON ee.id = p.enderecoEntregaId
-     LEFT JOIN  itens_pedido       ip ON ip.pedidoId = p.id
-     LEFT JOIN  pagamentos         pg ON pg.pedidoId = p.id AND pg.status = 'aprovado'
-     ${clausulaWhere}
-     GROUP BY p.id, p.status, p.total, p.formaPagamento, p.observacao,
-              c.id, c.nomeCompleto, c.telefone,
-              ee.rua, ee.numero, ee.bairro, ee.cidade,
-              pg.status, pg.forma, p.createdAt, p.updatedAt
-     ORDER BY p.createdAt DESC`,
-    { replacements, type: QueryTypes.SELECT }
-  );
-
   const emAndamento = pedidos.filter(
-    (p) => !['entregue', 'cancelado'].includes(p.status)
+    (p) => !["entregue", "cancelado"].includes(p.status)
   ).length;
-  const entregues  = pedidos.filter((p) => p.status === 'entregue').length;
-  const cancelados = pedidos.filter((p) => p.status === 'cancelado').length;
-  const receita    = pedidos
-    .filter((p) => p.status !== 'cancelado')
-    .reduce((s, p) => s + Number(p.total || 0), 0);
+  const entregues = pedidos.filter((p) => p.status === "entregue").length;
+  const cancelados = pedidos.filter((p) => p.status === "cancelado").length;
+  const receita = pedidos
+    .filter((p) => p.status !== "cancelado")
+    .reduce((s, p) => s + num(p.total), 0);
 
   return {
     filtros: {
       clienteId: clienteId ? Number(clienteId) : null,
-      status: status || 'todos',
+      status: status || "todos",
       dataInicio: dataInicio || null,
       dataFim: dataFim || null,
       busca: busca || null,
@@ -438,68 +461,61 @@ async function listarPedidos({ clienteId, status, dataInicio, dataFim, busca } =
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RF51 – Listar Avaliações
-//
-// Campos: notaComida, notaEntrega, notaMedia, comentário, pedido, cliente, data.
-// Filtros: dataInicio, dataFim, notaMin, notaMax, busca.
-// Ordenado por data decrescente.
 // ─────────────────────────────────────────────────────────────────────────────
 async function listarAvaliacoes({ dataInicio, dataFim, notaMin, notaMax, busca } = {}) {
-  const condicoes = [];
-  const replacements = {};
-
-  if (dataInicio) {
-    condicoes.push('av.createdAt >= :dataInicio');
-    replacements.dataInicio = `${dataInicio} 00:00:00`;
+  const where = {};
+  if (dataInicio || dataFim) {
+    where.createdAt = {};
+    if (dataInicio) where.createdAt[Op.gte] = `${dataInicio} 00:00:00`;
+    if (dataFim) where.createdAt[Op.lte] = `${dataFim} 23:59:59`;
   }
 
-  if (dataFim) {
-    condicoes.push('av.createdAt <= :dataFim');
-    replacements.dataFim = `${dataFim} 23:59:59`;
-  }
+  const registros = await Avaliacao.findAll({
+    where,
+    order: [["createdAt", "DESC"]],
+    include: [
+      { association: "cliente", attributes: ["id", "nomeCompleto"] },
+      { association: "pedido", attributes: ["id"] },
+    ],
+  });
 
-  if (notaMin !== undefined) {
-    condicoes.push('((av.notaComida + av.notaEntrega) / 2.0) >= :notaMin');
-    replacements.notaMin = Number(notaMin);
-  }
+  let avaliacoes = registros.map((a) => {
+    const j = a.toJSON();
+    const notaMedia = Number(((num(j.notaComida) + num(j.notaEntrega)) / 2).toFixed(1));
+    return {
+      id: j.id,
+      notaComida: j.notaComida,
+      notaEntrega: j.notaEntrega,
+      notaMedia,
+      comentario: j.comentario,
+      pedidoId: j.pedido ? j.pedido.id : j.pedidoId,
+      clienteId: j.cliente ? j.cliente.id : j.clienteId,
+      clienteNome: j.cliente ? j.cliente.nomeCompleto : null,
+      avaliadoEm: j.createdAt,
+    };
+  });
 
-  if (notaMax !== undefined) {
-    condicoes.push('((av.notaComida + av.notaEntrega) / 2.0) <= :notaMax');
-    replacements.notaMax = Number(notaMax);
-  }
-
+  if (notaMin !== undefined)
+    avaliacoes = avaliacoes.filter((a) => a.notaMedia >= Number(notaMin));
+  if (notaMax !== undefined)
+    avaliacoes = avaliacoes.filter((a) => a.notaMedia <= Number(notaMax));
   if (busca) {
-    condicoes.push(
-      '(c.nomeCompleto LIKE :busca OR CAST(p.id AS TEXT) LIKE :busca OR av.comentario LIKE :busca)'
+    const termo = String(busca).toLowerCase();
+    avaliacoes = avaliacoes.filter(
+      (a) =>
+        (a.clienteNome || "").toLowerCase().includes(termo) ||
+        String(a.pedidoId).includes(termo) ||
+        (a.comentario || "").toLowerCase().includes(termo)
     );
-    replacements.busca = `%${busca}%`;
   }
-
-  const clausulaWhere = condicoes.length ? `WHERE ${condicoes.join(' AND ')}` : '';
-
-  const avaliacoes = await sequelize.query(
-    `SELECT
-       av.id                                                         AS id,
-       av.notaComida                                                 AS notaComida,
-       av.notaEntrega                                                AS notaEntrega,
-       ROUND((av.notaComida + av.notaEntrega) / 2.0, 1)             AS notaMedia,
-       av.comentario                                                 AS comentario,
-       p.id                                                          AS pedidoId,
-       c.id                                                          AS clienteId,
-       c.nomeCompleto                                                AS clienteNome,
-       av.createdAt                                                  AS avaliadoEm
-     FROM avaliacoes av
-     INNER JOIN pedidos  p ON p.id = av.pedidoId
-     INNER JOIN clientes c ON c.id = av.clienteId
-     ${clausulaWhere}
-     ORDER BY av.createdAt DESC`,
-    { replacements, type: QueryTypes.SELECT }
-  );
 
   const total5estrelas = avaliacoes.filter((a) => a.notaMedia >= 4.5).length;
-  const total4estrelas = avaliacoes.filter((a) => a.notaMedia >= 3.5 && a.notaMedia < 4.5).length;
-  const abaixo3        = avaliacoes.filter((a) => a.notaMedia < 3.5).length;
-  const mediaGeral     = avaliacoes.length
-    ? (avaliacoes.reduce((s, a) => s + Number(a.notaMedia), 0) / avaliacoes.length).toFixed(1)
+  const total4estrelas = avaliacoes.filter(
+    (a) => a.notaMedia >= 3.5 && a.notaMedia < 4.5
+  ).length;
+  const abaixo3 = avaliacoes.filter((a) => a.notaMedia < 3.5).length;
+  const mediaGeral = avaliacoes.length
+    ? (avaliacoes.reduce((s, a) => s + a.notaMedia, 0) / avaliacoes.length).toFixed(1)
     : null;
 
   return {
@@ -521,83 +537,73 @@ async function listarAvaliacoes({ dataInicio, dataFim, notaMin, notaMax, busca }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RF52 – Listar Pagamentos
-//
-// Campos: valor, forma, status, pedido, cliente, data.
-// Filtros: status, forma, dataInicio, dataFim, clienteId.
-// Agrega: receita total aprovada e totais por forma de pagamento.
-// Ordenado por data decrescente.
 // ─────────────────────────────────────────────────────────────────────────────
 async function listarPagamentos({ status, forma, dataInicio, dataFim, clienteId } = {}) {
-  const condicoes = [];
-  const replacements = {};
-
-  if (status) {
-    condicoes.push('pg.status = :status');
-    replacements.status = status;
+  const where = {};
+  if (status) where.status = status;
+  if (forma) where.forma = forma;
+  if (dataInicio || dataFim) {
+    where.createdAt = {};
+    if (dataInicio) where.createdAt[Op.gte] = `${dataInicio} 00:00:00`;
+    if (dataFim) where.createdAt[Op.lte] = `${dataFim} 23:59:59`;
   }
 
-  if (forma) {
-    condicoes.push('pg.forma = :forma');
-    replacements.forma = forma;
-  }
+  const registros = await Pagamento.findAll({
+    where,
+    order: [["createdAt", "DESC"]],
+    include: [
+      {
+        association: "pedido",
+        attributes: ["id", "status", "clienteId"],
+        include: [
+          { association: "cliente", attributes: ["id", "nomeCompleto", "email"] },
+        ],
+      },
+    ],
+  });
 
-  if (dataInicio) {
-    condicoes.push('pg.createdAt >= :dataInicio');
-    replacements.dataInicio = `${dataInicio} 00:00:00`;
-  }
+  let pagamentos = registros.map((pg) => {
+    const j = pg.toJSON();
+    const pedido = j.pedido || {};
+    const cliente = pedido.cliente || {};
+    return {
+      id: j.id,
+      valor: j.valor,
+      forma: j.forma,
+      status: j.status,
+      pedidoId: j.pedidoId,
+      pedidoStatus: pedido.status || null,
+      clienteId: cliente.id || null,
+      clienteNome: cliente.nomeCompleto || null,
+      clienteEmail: cliente.email || null,
+      criadoEm: j.createdAt,
+      atualizadoEm: j.updatedAt,
+    };
+  });
 
-  if (dataFim) {
-    condicoes.push('pg.createdAt <= :dataFim');
-    replacements.dataFim = `${dataFim} 23:59:59`;
-  }
-
+  // Filtro por cliente (aplicado em memória via pedido→cliente)
   if (clienteId) {
-    condicoes.push('p.clienteId = :clienteId');
-    replacements.clienteId = Number(clienteId);
+    pagamentos = pagamentos.filter((p) => p.clienteId === Number(clienteId));
   }
 
-  const clausulaWhere = condicoes.length ? `WHERE ${condicoes.join(' AND ')}` : '';
+  const aprovados = pagamentos.filter((p) => p.status === "aprovado");
+  const totalPendentes = pagamentos.filter((p) => p.status === "pendente").length;
+  const totalRecusados = pagamentos.filter((p) => p.status === "recusado").length;
+  const receitaTotal = aprovados.reduce((s, p) => s + num(p.valor), 0);
 
-  const pagamentos = await sequelize.query(
-    `SELECT
-       pg.id                       AS id,
-       pg.valor                    AS valor,
-       pg.forma                    AS forma,
-       pg.status                   AS status,
-       pg.pedidoId                 AS pedidoId,
-       p.status                    AS pedidoStatus,
-       c.id                        AS clienteId,
-       c.nomeCompleto              AS clienteNome,
-       c.email                     AS clienteEmail,
-       pg.createdAt                AS criadoEm,
-       pg.updatedAt                AS atualizadoEm
-     FROM pagamentos pg
-     INNER JOIN pedidos  p ON p.id = pg.pedidoId
-     INNER JOIN clientes c ON c.id = p.clienteId
-     ${clausulaWhere}
-     ORDER BY pg.createdAt DESC`,
-    { replacements, type: QueryTypes.SELECT }
-  );
-
-  const aprovados    = pagamentos.filter((p) => p.status === 'aprovado');
-  const totalPendentes = pagamentos.filter((p) => p.status === 'pendente').length;
-  const totalRecusados = pagamentos.filter((p) => p.status === 'recusado').length;
-  const receitaTotal   = aprovados.reduce((s, p) => s + Number(p.valor || 0), 0);
-
-  // Totais por forma (somente aprovados)
   const porForma = {};
   for (const pg of aprovados) {
     if (!porForma[pg.forma]) {
       porForma[pg.forma] = { forma: pg.forma, quantidade: 0, total: 0 };
     }
     porForma[pg.forma].quantidade += 1;
-    porForma[pg.forma].total      += Number(pg.valor);
+    porForma[pg.forma].total += num(pg.valor);
   }
 
   return {
     filtros: {
-      status: status || 'todos',
-      forma: forma || 'todos',
+      status: status || "todos",
+      forma: forma || "todos",
       dataInicio: dataInicio || null,
       dataFim: dataFim || null,
       clienteId: clienteId ? Number(clienteId) : null,
@@ -607,7 +613,7 @@ async function listarPagamentos({ status, forma, dataInicio, dataFim, clienteId 
     totalPendentes,
     totalRecusados,
     receitaTotal: receitaTotal.toFixed(2),
-    totalPorForma: Object.values(porForma).map((f) => ({ ...f, total: f.total.toFixed(2) })),
+    porForma: Object.values(porForma),
     pagamentos,
   };
 }

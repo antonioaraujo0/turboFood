@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veículos – TurboFood Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div><span class="sidebar-logo-name">TurboFood</span><span class="sidebar-logo-sub">Administrador</span></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Principal</div>
+      <a href="dashboard.html" class="sidebar-link"><span class="icon">🏠</span> Dashboard</a>
+      <a href="pedidos.html" class="sidebar-link"><span class="icon">📋</span> Pedidos <span class="sidebar-badge">5</span></a>
+      <a href="pagamentos.html" class="sidebar-link"><span class="icon">💳</span> Pagamentos</a>
+      <div class="sidebar-section-title">Cadastros</div>
+      <a href="categorias.html" class="sidebar-link"><span class="icon">🏷️</span> Categorias</a>
+      <a href="produtos.html" class="sidebar-link"><span class="icon">🍕</span> Produtos</a>
+      <a href="clientes.html" class="sidebar-link"><span class="icon">👥</span> Clientes</a>
+      <a href="entregadores.html" class="sidebar-link"><span class="icon">🛵</span> Entregadores</a>
+      <a href="veiculos.html" class="sidebar-link active"><span class="icon">🚗</span> Veículos</a>
+      <div class="sidebar-section-title">Relatórios</div>
+      <a href="avaliacoes.html" class="sidebar-link"><span class="icon">⭐</span> Avaliações</a>
+      <a href="relatorios.html" class="sidebar-link"><span class="icon">📊</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">RH</div>
+        <div><div class="sidebar-user-name">Roni Herculano</div><div class="sidebar-user-role">Gerente</div></div>
+        <a href="../index.html" class="sidebar-logout-btn">🚪</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+      <button class="sidebar-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div class="top-bar-title">
+        <h1>🚗 Veículos</h1>
+        <p>Frota de veículos cadastrada</p>
+      </div>
+      <div class="top-bar-right">
+        <button class="btn btn-primary" onclick="openModal('modal-veiculo')">+ Novo Veículo</button>
+        <button class="icon-btn">🔔<span class="dot">3</span></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Buscar por placa ou modelo..." oninput="filterTable(this.value)">
+          </div>
+          <select class="form-control" style="width:auto">
+            <option>Todos os tipos</option>
+            <option>Moto</option>
+            <option>Carro</option>
+            <option>Bicicleta</option>
+          </select>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-secondary">📥 Exportar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="table" id="tableVeiculos">
+            <thead>
+              <tr>
+                <th>Veículo</th>
+                <th>Placa</th>
+                <th>RENAVAN</th>
+                <th>Cor</th>
+                <th>Tipo</th>
+                <th>Entregador</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span style="font-size:1.8rem">🛵</span>
+                    <div>
+                      <div class="font-semibold">Honda CG 160</div>
+                      <div class="text-xs text-muted">2022 • Flex</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-dark">ABC-1234</span></td>
+                <td class="text-sm">12345678901</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div style="width:14px;height:14px;border-radius:50%;background:#c0c0c0;border:1px solid var(--border)"></div>
+                    <span class="text-sm">Prata</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-info">🛵 Moto</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-orange">CF</div>
+                    <span class="text-sm">Carlos Ferreira</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-veiculo')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span style="font-size:1.8rem">🛵</span>
+                    <div>
+                      <div class="font-semibold">Honda Biz 125</div>
+                      <div class="text-xs text-muted">2021 • Gasolina</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-dark">DEF-5678</span></td>
+                <td class="text-sm">98765432109</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div style="width:14px;height:14px;border-radius:50%;background:#1a1a2e;border:1px solid var(--border)"></div>
+                    <span class="text-sm">Preta</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-info">🛵 Moto</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-blue">LM</div>
+                    <span class="text-sm">Lucas Mendes</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-veiculo')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span style="font-size:1.8rem">🛵</span>
+                    <div>
+                      <div class="font-semibold">Yamaha Fan 125</div>
+                      <div class="text-xs text-muted">2023 • Flex</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-dark">GHI-9012</span></td>
+                <td class="text-sm">55566677788</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div style="width:14px;height:14px;border-radius:50%;background:#e55a22;border:1px solid var(--border)"></div>
+                    <span class="text-sm">Vermelha</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-info">🛵 Moto</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-purple">PA</div>
+                    <span class="text-sm">Paulo Andrade</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-veiculo')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span style="font-size:1.8rem">🛵</span>
+                    <div>
+                      <div class="font-semibold">Honda PCX 150</div>
+                      <div class="text-xs text-muted">2024 • Gasolina</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-dark">JKL-3456</span></td>
+                <td class="text-sm">11122233344</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div style="width:14px;height:14px;border-radius:50%;background:#1e3a5f;border:1px solid var(--border)"></div>
+                    <span class="text-sm">Azul</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-info">🛵 Moto</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-green">MR</div>
+                    <span class="text-sm">Marcos Rocha</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-veiculo')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span style="font-size:1.8rem">🚲</span>
+                    <div>
+                      <div class="font-semibold">Caloi E-Bike</div>
+                      <div class="text-xs text-muted">2023 • Elétrica</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-gray">—</span></td>
+                <td class="text-sm">—</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div style="width:14px;height:14px;border-radius:50%;background:#065f46;border:1px solid var(--border)"></div>
+                    <span class="text-sm">Verde</span>
+                  </div>
+                </td>
+                <td><span class="badge badge-success">🚲 Bicicleta</span></td>
+                <td><span class="text-muted text-sm">— Sem vínculo</span></td>
+                <td><span class="badge badge-warning">⏸ Inativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-veiculo')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="pagination-info">Mostrando 5 de 9 veículos</span>
+          <div class="pagination-btns">
+            <button class="page-btn" disabled>‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL Veículo -->
+<div class="modal-overlay" id="modal-veiculo">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title"><span>🚗</span> Cadastrar Veículo</span>
+      <button class="modal-close" onclick="closeModal('modal-veiculo')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group">
+          <label class="form-label req">Marca</label>
+          <input type="text" class="form-control" placeholder="Ex: Honda, Yamaha">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Modelo</label>
+          <input type="text" class="form-control" placeholder="Ex: CG 160, Biz 125">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Ano</label>
+          <input type="number" class="form-control" placeholder="2024" min="1990" max="2030">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Cor</label>
+          <input type="text" class="form-control" placeholder="Ex: Prata, Preta">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Placa</label>
+          <input type="text" class="form-control" placeholder="ABC-1234" style="text-transform:uppercase">
+          <span class="form-hint">Formato: AAA-0000 ou AAA0A00 (Mercosul)</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label req">RENAVAN</label>
+          <input type="text" class="form-control" placeholder="00000000000">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Tipo</label>
+          <select class="form-control">
+            <option>🛵 Moto</option>
+            <option>🚗 Carro</option>
+            <option>🚲 Bicicleta</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Combustível</label>
+          <select class="form-control">
+            <option>Gasolina</option>
+            <option>Flex</option>
+            <option>Elétrico</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Entregador Responsável</label>
+          <select class="form-control">
+            <option value="">Nenhum</option>
+            <option>Carlos Ferreira</option>
+            <option>Lucas Mendes</option>
+            <option>Paulo Andrade</option>
+            <option>Marcos Rocha</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-control">
+            <option>✓ Ativo</option>
+            <option>⏸ Inativo</option>
+            <option>🔧 Manutenção</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-veiculo')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-veiculo')">💾 Salvar Veículo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('mobile-overlay');
+    sidebar.classList.toggle('mobile-open');
+    if (overlay) overlay.classList.toggle('mobile-overlay-show');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('mobile-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        overlay.classList.remove('mobile-overlay-show');
+      });
+    }
+  });
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  function filterTable(val) {
+    document.querySelectorAll('#tableVeiculos tbody tr').forEach(row => {
+      row.style.display = !val || row.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+</script>
+<div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+</body>
+</html>

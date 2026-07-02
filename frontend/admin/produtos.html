@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produtos – TurboFood Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div><span class="sidebar-logo-name">TurboFood</span><span class="sidebar-logo-sub">Administrador</span></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Principal</div>
+      <a href="dashboard.html" class="sidebar-link"><span class="icon">🏠</span> Dashboard</a>
+      <a href="pedidos.html" class="sidebar-link"><span class="icon">📋</span> Pedidos <span class="sidebar-badge">5</span></a>
+      <a href="pagamentos.html" class="sidebar-link"><span class="icon">💳</span> Pagamentos</a>
+      <div class="sidebar-section-title">Cadastros</div>
+      <a href="categorias.html" class="sidebar-link"><span class="icon">🏷️</span> Categorias</a>
+      <a href="produtos.html" class="sidebar-link active"><span class="icon">🍕</span> Produtos</a>
+      <a href="clientes.html" class="sidebar-link"><span class="icon">👥</span> Clientes</a>
+      <a href="entregadores.html" class="sidebar-link"><span class="icon">🛵</span> Entregadores</a>
+      <a href="veiculos.html" class="sidebar-link"><span class="icon">🚗</span> Veículos</a>
+      <div class="sidebar-section-title">Relatórios</div>
+      <a href="avaliacoes.html" class="sidebar-link"><span class="icon">⭐</span> Avaliações</a>
+      <a href="relatorios.html" class="sidebar-link"><span class="icon">📊</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">RH</div>
+        <div><div class="sidebar-user-name">Roni Herculano</div><div class="sidebar-user-role">Gerente</div></div>
+        <a href="../index.html" class="sidebar-logout-btn">🚪</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+      <button class="sidebar-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div class="top-bar-title">
+        <h1>🍕 Produtos</h1>
+        <p>Gerencie os itens do cardápio</p>
+      </div>
+      <div class="top-bar-right">
+        <button class="btn btn-primary" onclick="openModal('modal-produto')">+ Novo Produto</button>
+        <button class="icon-btn">🔔<span class="dot">3</span></button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Buscar produto..." oninput="filterTable(this.value)">
+          </div>
+          <select class="form-control" style="width:auto">
+            <option>Todas as categorias</option>
+            <option>Pizzas</option>
+            <option>Lanches</option>
+            <option>Bebidas</option>
+            <option>Sobremesas</option>
+            <option>Combos</option>
+          </select>
+          <select class="form-control" style="width:auto">
+            <option>Todos os status</option>
+            <option>Disponível</option>
+            <option>Indisponível</option>
+          </select>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-secondary">📥 Exportar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="table" id="tableProdutos">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Categoria</th>
+                <th>Preço</th>
+                <th>Estoque</th>
+                <th>Disponível</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="prod-img-placeholder">🍕</div>
+                    <div>
+                      <div class="font-semibold">Pizza Margherita</div>
+                      <div class="text-xs text-muted">Molho, mussarela, tomate, manjericão</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-primary">Pizzas</span></td>
+                <td><strong>R$ 42,90</strong></td>
+                <td>∞</td>
+                <td>
+                  <label class="toggle-wrap">
+                    <input type="checkbox" class="toggle-inp" checked>
+                    <span class="toggle"></span>
+                  </label>
+                </td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-produto')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="prod-img-placeholder">🍕</div>
+                    <div>
+                      <div class="font-semibold">Pizza Calabresa</div>
+                      <div class="text-xs text-muted">Molho, mussarela, calabresa, cebola</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-primary">Pizzas</span></td>
+                <td><strong>R$ 44,90</strong></td>
+                <td>∞</td>
+                <td>
+                  <label class="toggle-wrap">
+                    <input type="checkbox" class="toggle-inp" checked>
+                    <span class="toggle"></span>
+                  </label>
+                </td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-produto')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="prod-img-placeholder">🍔</div>
+                    <div>
+                      <div class="font-semibold">TurboSmash Burger</div>
+                      <div class="text-xs text-muted">2x blend 120g, queijo americano, molho especial</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge" style="background:rgba(245,158,11,0.1);color:#92400e">Lanches</span></td>
+                <td><strong>R$ 34,90</strong></td>
+                <td>∞</td>
+                <td>
+                  <label class="toggle-wrap">
+                    <input type="checkbox" class="toggle-inp" checked>
+                    <span class="toggle"></span>
+                  </label>
+                </td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-produto')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="prod-img-placeholder">🥤</div>
+                    <div>
+                      <div class="font-semibold">Coca-Cola 2L</div>
+                      <div class="text-xs text-muted">Garrafa 2 litros geladinha</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-info">Bebidas</span></td>
+                <td><strong>R$ 12,00</strong></td>
+                <td>45 un.</td>
+                <td>
+                  <label class="toggle-wrap">
+                    <input type="checkbox" class="toggle-inp" checked>
+                    <span class="toggle"></span>
+                  </label>
+                </td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-produto')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="prod-img-placeholder">🍰</div>
+                    <div>
+                      <div class="font-semibold">Petit Gâteau</div>
+                      <div class="text-xs text-muted">Com sorvete de creme e calda de chocolate</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-pink">Sobremesas</span></td>
+                <td><strong>R$ 22,00</strong></td>
+                <td>∞</td>
+                <td>
+                  <label class="toggle-wrap">
+                    <input type="checkbox" class="toggle-inp">
+                    <span class="toggle"></span>
+                  </label>
+                </td>
+                <td><span class="badge badge-warning">⏸ Inativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-produto')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="prod-img-placeholder">🎁</div>
+                    <div>
+                      <div class="font-semibold">Combo Família</div>
+                      <div class="text-xs text-muted">2 pizzas grandes + 2 refrigerantes 2L</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-purple">Combos</span></td>
+                <td><strong>R$ 89,90</strong></td>
+                <td>∞</td>
+                <td>
+                  <label class="toggle-wrap">
+                    <input type="checkbox" class="toggle-inp" checked>
+                    <span class="toggle"></span>
+                  </label>
+                </td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-produto')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="pagination-info">Mostrando 6 de 48 produtos</span>
+          <div class="pagination-btns">
+            <button class="page-btn" disabled>‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL Produto -->
+<div class="modal-overlay" id="modal-produto">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title"><span>🍕</span> Novo Produto</span>
+      <button class="modal-close" onclick="closeModal('modal-produto')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row cols-2 mb-4" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label req">Nome do Produto</label>
+          <input type="text" class="form-control" placeholder="Ex: Pizza Margherita">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Categoria</label>
+          <select class="form-control">
+            <option value="">Selecione a categoria...</option>
+            <option>Pizzas</option>
+            <option>Lanches</option>
+            <option>Bebidas</option>
+            <option>Sobremesas</option>
+            <option>Combos</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Preço (R$)</label>
+          <div class="input-with-icon">
+            <span class="input-icon">💲</span>
+            <input type="number" class="form-control" placeholder="0,00" min="0" step="0.01">
+          </div>
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label">Descrição</label>
+          <textarea class="form-control" rows="2" placeholder="Descreva os ingredientes e diferenciais do produto..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estoque</label>
+          <input type="number" class="form-control" placeholder="Deixe vazio para ilimitado">
+          <span class="form-hint">Deixe vazio para produto sem controle de estoque</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-control">
+            <option>✓ Ativo (Disponível)</option>
+            <option>⏸ Inativo (Indisponível)</option>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label">Imagem do Produto</label>
+          <div style="border:2px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;cursor:pointer;transition:var(--transition)" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="font-size:2rem;margin-bottom:8px">🖼️</div>
+            <p class="text-sm text-muted">Clique ou arraste uma imagem aqui</p>
+            <p class="text-xs text-muted mt-1">PNG, JPG até 2MB</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-produto')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-produto')">💾 Salvar Produto</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('mobile-overlay');
+    sidebar.classList.toggle('mobile-open');
+    if (overlay) overlay.classList.toggle('mobile-overlay-show');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('mobile-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        overlay.classList.remove('mobile-overlay-show');
+      });
+    }
+  });
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  function filterTable(val) {
+    document.querySelectorAll('#tableProdutos tbody tr').forEach(row => {
+      row.style.display = !val || row.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+</script>
+<div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+</body>
+</html>

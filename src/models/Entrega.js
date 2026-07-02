@@ -1,37 +1,42 @@
-import { Model, DataTypes } from 'sequelize';
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-class Entrega extends Model {
-  static init(sequelize) {
-    super.init({
-      dataSaida: {
-        type: DataTypes.DATE,
-        validate: {
-          isDate: { msg: "Data de saída inválida!" }
-        }
-      },
-      dataConclusao: {
-        type: DataTypes.DATE,
-        validate: {
-          isDate: { msg: "Data de conclusão inválida!" }
-        }
-      },
-      status: {
-        type: DataTypes.STRING,
-        validate: {
-          notEmpty: { msg: "Status da Entrega deve ser preenchido!" },
-          isIn: {
-            args: [['AGUARDANDO', 'EM_ROTA', 'ENTREGUE', 'FALHOU']],
-            msg: "Status inválido!"
-          }
-        }
-      }
-    }, { sequelize, modelName: 'entrega', tableName: 'entregas' });
+// Entrega agrupa de 1 a 5 pedidos (RN01) atribuídos a um entregador.
+// As associações são definidas centralmente em models/index.js.
+const Entrega = sequelize.define(
+  "Entrega",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    dataSaida: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    dataConclusao: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    status: {
+      type: DataTypes.ENUM("AGUARDANDO", "EM_ROTA", "ENTREGUE", "FALHOU"),
+      allowNull: false,
+      defaultValue: "AGUARDANDO",
+    },
+    motivoFalha: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    entregadorId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    tableName: "entregas",
+    timestamps: true,
   }
+);
 
-  static associate(models) {
-    this.belongsTo(models.Pedido, { foreignKey: 'pedidoId', as: 'pedido' });
-    this.belongsTo(models.Entregador, { foreignKey: 'entregadorId', as: 'entregador' });
-  }
-}
-
-export { Entrega };
+module.exports = Entrega;

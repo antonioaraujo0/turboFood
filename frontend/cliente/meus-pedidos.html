@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meus Pedidos – TurboFood</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="customer-body">
+
+  <!-- NAVBAR -->
+  <nav class="customer-nav">
+    <div class="customer-nav-inner">
+      <a href="cardapio.html" class="nav-logo">
+        <div class="nav-logo-icon">⚡</div>
+        <span class="nav-logo-name">Turbo<span>Food</span></span>
+      </a>
+      <div></div>
+      <div class="nav-actions">
+        <a href="cardapio.html" class="btn btn-secondary btn-sm">🍕 Cardápio</a>
+        <a href="carrinho.html" class="cart-btn" style="text-decoration:none">🛒 Carrinho <span class="cart-count">3</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="menu-content" style="max-width:800px">
+    <h1 class="text-2xl font-bold mb-6">📋 Meus Pedidos</h1>
+
+    <!-- Pedido Ativo (em andamento) -->
+    <div class="card mb-6" style="border:2px solid var(--primary)">
+      <div class="card-header" style="background:var(--primary-bg)">
+        <div>
+          <span class="card-title">🚀 Pedido em andamento</span>
+          <p class="text-xs text-muted mt-1">Pedido #0047 • 17/05/2026 às 14:32</p>
+        </div>
+        <span class="badge status-preparando">🍳 Preparando</span>
+      </div>
+      <div class="card-body">
+
+        <!-- Timeline de Status -->
+        <div class="timeline" style="padding-left:20px">
+          <div class="timeline-item">
+            <div class="timeline-dot done">✓</div>
+            <div class="timeline-content">
+              <div class="timeline-title">✅ Pedido Recebido</div>
+              <div class="timeline-time">14:32 – Pedido confirmado no sistema</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot done">✓</div>
+            <div class="timeline-content">
+              <div class="timeline-title">💳 Pagamento Aprovado</div>
+              <div class="timeline-time">14:33 – PIX confirmado</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot current">🍳</div>
+            <div class="timeline-content">
+              <div class="timeline-title" style="color:var(--primary)">🍳 Preparando seu pedido</div>
+              <div class="timeline-time" style="color:var(--primary)">14:35 – A cozinha já começou!</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">🛵</div>
+            <div class="timeline-content">
+              <div class="timeline-title text-muted">Saiu para entrega</div>
+              <div class="timeline-time">Aguardando...</div>
+            </div>
+          </div>
+          <div class="timeline-item" style="padding-bottom:0">
+            <div class="timeline-dot">📦</div>
+            <div class="timeline-content">
+              <div class="timeline-title text-muted">Entregue</div>
+              <div class="timeline-time">Estimativa: ~35–50 min</div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="flex gap-4 flex-wrap">
+          <div class="flex-1">
+            <p class="text-xs text-muted font-semibold mb-2">ITENS</p>
+            <div class="flex flex-col gap-1">
+              <div class="flex justify-between text-sm"><span>1x Pizza Calabresa G</span><span>R$ 44,90</span></div>
+              <div class="flex justify-between text-sm"><span>2x Coca-Cola 2L</span><span>R$ 24,00</span></div>
+              <div class="flex justify-between text-sm"><span>1x Petit Gâteau</span><span>R$ 22,00</span></div>
+            </div>
+            <hr class="divider">
+            <div class="flex justify-between text-sm"><span>Entrega:</span><span>R$ 5,00</span></div>
+            <div class="flex justify-between font-bold"><span>Total:</span><span class="text-primary">R$ 95,90</span></div>
+          </div>
+          <div style="min-width:200px">
+            <p class="text-xs text-muted font-semibold mb-2">ENTREGADOR</p>
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-orange">CF</div>
+              <div>
+                <div class="font-semibold text-sm">Carlos Ferreira</div>
+                <div class="text-xs text-muted">📞 (28) 99111-2222</div>
+              </div>
+            </div>
+            <p class="text-xs text-muted mt-3 font-semibold">ENDEREÇO</p>
+            <p class="text-sm">Rua das Flores, 123 – Centro</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Histórico de Pedidos -->
+    <h2 class="text-lg font-bold mb-4">📚 Histórico</h2>
+
+    <div class="flex flex-col gap-3">
+      <!-- Pedido entregue -->
+      <div class="card">
+        <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="toggleOrder('order1')">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <strong>#0044</strong>
+              <span class="badge status-entregue">📦 Entregue</span>
+            </div>
+            <p class="text-sm text-muted">14/05/2026 • 3 itens • R$ 98,90</p>
+          </div>
+          <div class="flex gap-2 items-center">
+            <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); openModal('modal-avaliacao')">⭐ Avaliar</button>
+            <button class="btn btn-sm btn-primary" onclick="event.stopPropagation()">🔄 Pedir novamente</button>
+            <span id="order1-arrow">▼</span>
+          </div>
+        </div>
+        <div id="order1" style="display:none;padding:0 20px 16px;border-top:1px solid var(--border)">
+          <div class="flex flex-col gap-1 mt-3">
+            <div class="flex justify-between text-sm"><span>1x Pizza Portuguesa G</span><span>R$ 47,90</span></div>
+            <div class="flex justify-between text-sm"><span>2x Suco de Laranja 500ml</span><span>R$ 20,00</span></div>
+            <div class="flex justify-between text-sm"><span>1x Sorvete 2 Bolas</span><span>R$ 14,00</span></div>
+            <hr class="divider">
+            <div class="flex justify-between text-sm"><span>Entrega:</span><span>R$ 7,00</span></div>
+            <div class="flex justify-between font-bold"><span>Total:</span><span class="text-primary">R$ 98,90</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pedido entregue 2 -->
+      <div class="card">
+        <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="toggleOrder('order2')">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <strong>#0039</strong>
+              <span class="badge status-entregue">📦 Entregue</span>
+            </div>
+            <p class="text-sm text-muted">10/05/2026 • 5 itens • R$ 124,00</p>
+          </div>
+          <div class="flex gap-2 items-center">
+            <span class="badge badge-warning">⭐ Avaliado (4/5)</span>
+            <button class="btn btn-sm btn-primary" onclick="event.stopPropagation()">🔄 Pedir novamente</button>
+            <span id="order2-arrow">▼</span>
+          </div>
+        </div>
+        <div id="order2" style="display:none;padding:0 20px 16px;border-top:1px solid var(--border)">
+          <p class="text-sm text-muted mt-3">2x Pizza Margherita G • 1x Hambúrguer Bacon • 2x Coca-Cola 2L</p>
+          <div class="flex justify-between font-bold mt-2"><span>Total:</span><span class="text-primary">R$ 124,00</span></div>
+        </div>
+      </div>
+
+      <!-- Pedido cancelado -->
+      <div class="card" style="opacity:0.7">
+        <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <strong>#0035</strong>
+              <span class="badge status-cancelado">❌ Cancelado</span>
+            </div>
+            <p class="text-sm text-muted">05/05/2026 • 1 item • R$ 34,90</p>
+          </div>
+          <span class="text-xs text-muted">Cancelado pelo cliente</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL Avaliação -->
+  <div class="modal-overlay" id="modal-avaliacao">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title"><span>⭐</span> Avaliar Pedido #0044</span>
+        <button class="modal-close" onclick="closeModal('modal-avaliacao')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info mb-4" style="font-size:0.8125rem">
+          📅 Você tem até <strong>7 dias após a entrega</strong> para avaliar.
+        </div>
+
+        <div class="form-group mb-4">
+          <label class="form-label req">⭐ Nota da Comida</label>
+          <div class="flex gap-2" style="margin-top:8px" id="ratingFood">
+            <button class="star-btn" data-val="1" onclick="setRating('food',1)">☆</button>
+            <button class="star-btn" data-val="2" onclick="setRating('food',2)">☆</button>
+            <button class="star-btn" data-val="3" onclick="setRating('food',3)">☆</button>
+            <button class="star-btn" data-val="4" onclick="setRating('food',4)">☆</button>
+            <button class="star-btn" data-val="5" onclick="setRating('food',5)">☆</button>
+          </div>
+          <style>
+            .star-btn { font-size:2rem; background:none; border:none; cursor:pointer; color:var(--gray-300); transition:var(--transition); }
+            .star-btn:hover, .star-btn.active { color:var(--warning); }
+          </style>
+        </div>
+
+        <div class="form-group mb-4">
+          <label class="form-label req">🛵 Nota da Entrega</label>
+          <div class="flex gap-2" style="margin-top:8px" id="ratingDelivery">
+            <button class="star-btn" data-val="1" onclick="setRating('delivery',1)">☆</button>
+            <button class="star-btn" data-val="2" onclick="setRating('delivery',2)">☆</button>
+            <button class="star-btn" data-val="3" onclick="setRating('delivery',3)">☆</button>
+            <button class="star-btn" data-val="4" onclick="setRating('delivery',4)">☆</button>
+            <button class="star-btn" data-val="5" onclick="setRating('delivery',5)">☆</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">💬 Comentário (opcional)</label>
+          <textarea class="form-control" rows="3" placeholder="Conte como foi sua experiência..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-avaliacao')">Cancelar</button>
+        <button class="btn btn-primary" onclick="closeModal('modal-avaliacao')">⭐ Enviar Avaliação</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+  function toggleOrder(id) {
+    const el = document.getElementById(id);
+    const arrow = document.getElementById(id + '-arrow');
+    const isOpen = el.style.display !== 'none';
+    el.style.display = isOpen ? 'none' : 'block';
+    arrow.textContent = isOpen ? '▼' : '▲';
+  }
+
+  function setRating(type, val) {
+    const container = document.getElementById('rating' + (type === 'food' ? 'Food' : 'Delivery'));
+    const btns = container.querySelectorAll('.star-btn');
+    btns.forEach((btn, i) => {
+      btn.textContent = i < val ? '⭐' : '☆';
+      btn.classList.toggle('active', i < val);
+    });
+  }
+
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+</script>
+</body>
+</html>

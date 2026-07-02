@@ -12,6 +12,7 @@ const Pedido = require("./models/Pedido");
 const ItemPedido = require("./models/ItemPedido");
 const Pagamento = require("./models/Pagamento");
 const Avaliacao = require("./models/Avaliacao");
+const Entrega = require("./models/Entrega");
 
 (async () => {
   await sequelize.sync({ force: true });
@@ -496,6 +497,46 @@ const Avaliacao = require("./models/Avaliacao");
     pedidoId: ped5.id,
     clienteId: cli5.id,
   });
+
+  // ─── ENTREGAS (concluídas nas últimas 24h, para os relatórios) ──
+  const h = (horas) => new Date(Date.now() - horas * 60 * 60 * 1000);
+
+  // ent1 — 1h trabalhada (saída -2h → conclusão -1h)
+  const entrega1 = await Entrega.create({
+    entregadorId: ent1.id,
+    status: "ENTREGUE",
+    dataSaida: h(2),
+    dataConclusao: h(1),
+  });
+  await ped1.update({ entregaId: entrega1.id });
+
+  // ent2 — 4h trabalhadas (saída -5h → conclusão -1h)
+  const entrega2 = await Entrega.create({
+    entregadorId: ent2.id,
+    status: "ENTREGUE",
+    dataSaida: h(5),
+    dataConclusao: h(1),
+  });
+  await ped2.update({ entregaId: entrega2.id });
+
+  // ent4 — 1h trabalhada (saída -3h → conclusão -2h)
+  const entrega3 = await Entrega.create({
+    entregadorId: ent4.id,
+    status: "ENTREGUE",
+    dataSaida: h(3),
+    dataConclusao: h(2),
+  });
+  await ped4.update({ entregaId: entrega3.id });
+
+  // ent5 — entrega concluída há 8 DIAS (para demonstrar avaliação com sucesso,
+  // pois a RN02 exige > 7 dias). ped6 ainda não tem avaliação.
+  const entrega4 = await Entrega.create({
+    entregadorId: ent5.id,
+    status: "ENTREGUE",
+    dataSaida: h(8 * 24 + 1),
+    dataConclusao: h(8 * 24),
+  });
+  await ped6.update({ entregaId: entrega4.id });
 
   console.log("✅ Banco de dados populado com sucesso!");
   process.exit(0);

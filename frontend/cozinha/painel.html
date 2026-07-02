@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel da Cozinha – TurboFood</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body { background: #0f1117; }
+    .kitchen-time-display {
+      font-family: 'Courier New', monospace;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR COZINHA -->
+  <div class="kitchen-nav">
+    <div class="kitchen-nav-logo">
+      <span class="icon">⚡</span>
+      <span class="kitchen-nav-name">Turbo<span>Food</span></span>
+      <span style="color:rgba(255,255,255,0.4);margin:0 8px">|</span>
+      <span style="color:rgba(255,255,255,0.6);font-size:0.875rem">🍳 Painel da Cozinha</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="kitchen-time-display" id="clock">14:35</div>
+      <div class="flex items-center gap-2">
+        <span class="kitchen-badge pulse">5 novos pedidos</span>
+        <a href="../index.html" class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:#fff;border:none">Sair 🚪</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <div class="kitchen-content">
+
+    <!-- Stats rápidas -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      <div style="background:#1a1d26;border-radius:var(--radius);padding:14px;text-align:center;border:1px solid rgba(255,255,255,0.07)">
+        <div style="font-size:1.8rem;font-weight:800;color:#fbbf24">5</div>
+        <div style="font-size:0.78rem;color:rgba(255,255,255,0.5)">Novos Pedidos</div>
+      </div>
+      <div style="background:#1a1d26;border-radius:var(--radius);padding:14px;text-align:center;border:1px solid rgba(255,255,255,0.07)">
+        <div style="font-size:1.8rem;font-weight:800;color:#a78bfa">8</div>
+        <div style="font-size:0.78rem;color:rgba(255,255,255,0.5)">Em Preparo</div>
+      </div>
+      <div style="background:#1a1d26;border-radius:var(--radius);padding:14px;text-align:center;border:1px solid rgba(255,255,255,0.07)">
+        <div style="font-size:1.8rem;font-weight:800;color:#34d399">3</div>
+        <div style="font-size:0.78rem;color:rgba(255,255,255,0.5)">Prontos p/ Entrega</div>
+      </div>
+      <div style="background:#1a1d26;border-radius:var(--radius);padding:14px;text-align:center;border:1px solid rgba(255,255,255,0.07)">
+        <div style="font-size:1.8rem;font-weight:800;color:#fff">47</div>
+        <div style="font-size:0.78rem;color:rgba(255,255,255,0.5)">Entregues Hoje</div>
+      </div>
+    </div>
+
+    <!-- Kanban Board -->
+    <div class="kitchen-board">
+
+      <!-- COL 1: Novos Pedidos -->
+      <div>
+        <div class="kitchen-col-header new">
+          <span>⏳ Novos Pedidos</span>
+          <span style="background:rgba(245,158,11,0.25);padding:3px 10px;border-radius:var(--radius-full);font-size:0.78rem">5</span>
+        </div>
+
+        <div class="kitchen-card">
+          <div class="kitchen-order-id">#0047 – URGENTE!</div>
+          <div class="kitchen-client">João Carlos Souza</div>
+          <div class="kitchen-items">
+            <div class="kitchen-item-row"><span>🍕 Pizza Calabresa G × 1</span></div>
+            <div class="kitchen-item-row"><span>🥤 Coca-Cola 2L × 2</span></div>
+            <div class="kitchen-item-row"><span>🍰 Petit Gâteau × 1</span></div>
+          </div>
+          <div class="kitchen-time urgent">
+            ⏰ <span>Aguardando há 12 min</span>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button class="btn btn-sm btn-primary w-full" style="justify-content:center">▶ Iniciar Preparo</button>
+          </div>
+        </div>
+
+        <div class="kitchen-card">
+          <div class="kitchen-order-id">#0048</div>
+          <div class="kitchen-client">Fernanda Costa</div>
+          <div class="kitchen-items">
+            <div class="kitchen-item-row"><span>🍔 TurboSmash Burger × 2</span></div>
+            <div class="kitchen-item-row"><span>🥤 Água Mineral × 2</span></div>
+          </div>
+          <div class="kitchen-time normal">
+            ⏰ <span>Aguardando há 5 min</span>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button class="btn btn-sm btn-primary w-full" style="justify-content:center">▶ Iniciar Preparo</button>
+          </div>
+        </div>
+
+        <div class="kitchen-card">
+          <div class="kitchen-order-id">#0049</div>
+          <div class="kitchen-client">Rafael Santos</div>
+          <div class="kitchen-items">
+            <div class="kitchen-item-row"><span>🍕 Pizza Margherita G × 1</span></div>
+            <div class="kitchen-item-row"><span>🍕 Pizza Frango × 1</span></div>
+            <div class="kitchen-item-row"><span>🥤 Coca-Cola 2L × 2</span></div>
+          </div>
+          <div class="kitchen-time fresh">
+            ⏰ <span>Acabou de chegar!</span>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button class="btn btn-sm btn-primary w-full" style="justify-content:center">▶ Iniciar Preparo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- COL 2: Em Preparo -->
+      <div>
+        <div class="kitchen-col-header prep">
+          <span>🍳 Em Preparo</span>
+          <span style="background:rgba(139,92,246,0.25);padding:3px 10px;border-radius:var(--radius-full);font-size:0.78rem">8</span>
+        </div>
+
+        <div class="kitchen-card" style="border-color:rgba(139,92,246,0.3)">
+          <div class="kitchen-order-id">#0044</div>
+          <div class="kitchen-client">Maria Silva</div>
+          <div class="kitchen-items">
+            <div class="kitchen-item-row"><span>🍕 Pizza Portuguesa G × 1</span></div>
+            <div class="kitchen-item-row"><span>🥤 Suco de Laranja × 2</span></div>
+            <div class="kitchen-item-row"><span>🍰 Sorvete 2 Bolas × 1</span></div>
+          </div>
+          <div class="kitchen-time normal">
+            ⏰ <span>Em preparo há 8 min</span>
+          </div>
+          <!-- Progresso visual -->
+          <div style="margin-top:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font-size:0.72rem;color:rgba(255,255,255,0.4)">Progresso estimado</span>
+              <span style="font-size:0.72rem;color:#a78bfa">55%</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar purple" style="width:55%"></div>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button class="btn btn-sm btn-success w-full" style="justify-content:center">✅ Marcar como Pronto</button>
+          </div>
+        </div>
+
+        <div class="kitchen-card" style="border-color:rgba(139,92,246,0.3)">
+          <div class="kitchen-order-id">#0043</div>
+          <div class="kitchen-client">Pedro Oliveira</div>
+          <div class="kitchen-items">
+            <div class="kitchen-item-row"><span>🍔 Bacon Smash × 1</span></div>
+            <div class="kitchen-item-row"><span>🥤 Coca-Cola Lata × 1</span></div>
+          </div>
+          <div class="kitchen-time fresh">
+            ⏰ <span>Em preparo há 3 min</span>
+          </div>
+          <div style="margin-top:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font-size:0.72rem;color:rgba(255,255,255,0.4)">Progresso estimado</span>
+              <span style="font-size:0.72rem;color:#a78bfa">20%</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar purple" style="width:20%"></div>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button class="btn btn-sm btn-success w-full" style="justify-content:center">✅ Marcar como Pronto</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- COL 3: Prontos -->
+      <div>
+        <div class="kitchen-col-header done">
+          <span>✅ Prontos p/ Entrega</span>
+          <span style="background:rgba(16,185,129,0.25);padding:3px 10px;border-radius:var(--radius-full);font-size:0.78rem">3</span>
+        </div>
+
+        <div class="kitchen-card" style="border-color:rgba(16,185,129,0.3)">
+          <div class="kitchen-order-id" style="color:#34d399">#0040 – AGUARDANDO ENTREGADOR</div>
+          <div class="kitchen-client">Ana Lima</div>
+          <div class="kitchen-items">
+            <div class="kitchen-item-row"><span>🎁 Combo Família × 1</span></div>
+            <div class="kitchen-item-row"><span>🍰 Petit Gâteau × 2</span></div>
+          </div>
+          <div class="kitchen-time" style="color:#34d399">
+            ✅ <span>Pronto há 5 min</span>
+          </div>
+          <div style="margin-top:10px;padding:8px;background:rgba(16,185,129,0.08);border-radius:var(--radius-sm);border:1px solid rgba(16,185,129,0.2)">
+            <div style="font-size:0.78rem;color:#34d399">🛵 Entregador: Carlos Ferreira</div>
+            <div style="font-size:0.72rem;color:rgba(255,255,255,0.4)">Disponível – aguardando coleta</div>
+          </div>
+        </div>
+
+        <div class="kitchen-card" style="border-color:rgba(16,185,129,0.3)">
+          <div class="kitchen-order-id" style="color:#34d399">#0038</div>
+          <div class="kitchen-client">Carla Mendes</div>
+          <div class="kitchen-items">
+            <div class="kitchen-item-row"><span>🍕 Pizza Calabresa M × 1</span></div>
+          </div>
+          <div class="kitchen-time" style="color:#34d399">
+            ✅ <span>Pronto há 12 min</span>
+          </div>
+          <div style="margin-top:10px;padding:8px;background:rgba(236,72,153,0.08);border-radius:var(--radius-sm);border:1px solid rgba(236,72,153,0.2)">
+            <div style="font-size:0.78rem;color:#f472b6">🛵 Entregador: Marcos Rocha</div>
+            <div style="font-size:0.72rem;color:rgba(255,255,255,0.4)">Saiu para entrega às 14:28</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  // Relógio em tempo real
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('clock').textContent = h + ':' + m + ':' + s;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+</body>
+</html>

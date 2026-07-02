@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatórios – TurboFood Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div><span class="sidebar-logo-name">TurboFood</span><span class="sidebar-logo-sub">Administrador</span></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Principal</div>
+      <a href="dashboard.html" class="sidebar-link"><span class="icon">🏠</span> Dashboard</a>
+      <a href="pedidos.html" class="sidebar-link"><span class="icon">📋</span> Pedidos <span class="sidebar-badge">5</span></a>
+      <a href="pagamentos.html" class="sidebar-link"><span class="icon">💳</span> Pagamentos</a>
+      <div class="sidebar-section-title">Cadastros</div>
+      <a href="categorias.html" class="sidebar-link"><span class="icon">🏷️</span> Categorias</a>
+      <a href="produtos.html" class="sidebar-link"><span class="icon">🍕</span> Produtos</a>
+      <a href="clientes.html" class="sidebar-link"><span class="icon">👥</span> Clientes</a>
+      <a href="entregadores.html" class="sidebar-link"><span class="icon">🛵</span> Entregadores</a>
+      <a href="veiculos.html" class="sidebar-link"><span class="icon">🚗</span> Veículos</a>
+      <div class="sidebar-section-title">Relatórios</div>
+      <a href="avaliacoes.html" class="sidebar-link"><span class="icon">⭐</span> Avaliações</a>
+      <a href="relatorios.html" class="sidebar-link active"><span class="icon">📊</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">RH</div>
+        <div><div class="sidebar-user-name">Roni Herculano</div><div class="sidebar-user-role">Gerente</div></div>
+        <a href="../index.html" class="sidebar-logout-btn">🚪</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+      <button class="sidebar-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div class="top-bar-title">
+        <h1>📊 Relatórios</h1>
+        <p>Listagens e análises do sistema</p>
+      </div>
+      <div class="top-bar-right">
+        <div class="flex gap-2">
+          <input type="date" class="form-control" style="width:auto" value="2026-05-01">
+          <span class="flex items-center text-muted">até</span>
+          <input type="date" class="form-control" style="width:auto" value="2026-05-17">
+          <button class="btn btn-primary">🔍 Filtrar</button>
+        </div>
+        <button class="btn btn-secondary">📥 Exportar PDF</button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Tabs -->
+      <div class="tabs-nav" id="tabs">
+        <button class="tab-link active" onclick="showTab('categorias', this)">🏷️ Categorias</button>
+        <button class="tab-link" onclick="showTab('produtos', this)">🍕 Produtos</button>
+        <button class="tab-link" onclick="showTab('clientes', this)">👥 Clientes</button>
+        <button class="tab-link" onclick="showTab('entregadores', this)">🛵 Entregadores</button>
+        <button class="tab-link" onclick="showTab('veiculos', this)">🚗 Veículos</button>
+        <button class="tab-link" onclick="showTab('pedidos', this)">📋 Pedidos</button>
+        <button class="tab-link" onclick="showTab('avaliacoes', this)">⭐ Avaliações</button>
+        <button class="tab-link" onclick="showTab('pagamentos', this)">💳 Pagamentos</button>
+      </div>
+
+      <!-- RF45: Listar Categorias (ordem alfabética) -->
+      <div id="tab-categorias" class="tab-content active">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🏷️ Lista de Categorias (ordem alfabética)</span>
+            <span class="badge badge-info">6 categorias</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead><tr><th>Nome da Categoria</th><th>Descrição</th><th>Produtos Ativos</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Bebidas</strong></td><td>Refrigerantes, sucos e águas</td><td>8</td><td><span class="badge badge-success">Ativo</span></td></tr>
+                <tr><td><strong>Combos</strong></td><td>Combos e promoções especiais</td><td>4</td><td><span class="badge badge-success">Ativo</span></td></tr>
+                <tr><td><strong>Entradas</strong></td><td>Porções e entradas</td><td>0</td><td><span class="badge badge-warning">Inativo</span></td></tr>
+                <tr><td><strong>Lanches</strong></td><td>Hambúrgueres e sanduíches</td><td>12</td><td><span class="badge badge-success">Ativo</span></td></tr>
+                <tr><td><strong>Pizzas</strong></td><td>Pizzas tradicionais e especiais</td><td>18</td><td><span class="badge badge-success">Ativo</span></td></tr>
+                <tr><td><strong>Sobremesas</strong></td><td>Doces, bolos e sorvetes</td><td>6</td><td><span class="badge badge-success">Ativo</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RF46: Listar Produtos (por categoria, ordem alfabética) -->
+      <div id="tab-produtos" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🍕 Lista de Produtos (por categoria – ordem alfabética)</span>
+            <span class="badge badge-info">48 produtos</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead><tr><th>Nome do Produto</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Disponível</th></tr></thead>
+              <tbody>
+                <tr><td colspan="5" style="background:var(--gray-50)"><strong>🍔 Lanches</strong></td></tr>
+                <tr><td>Bacon Smash Burger</td><td><span class="badge" style="background:rgba(245,158,11,0.1);color:#92400e">Lanches</span></td><td>R$ 36,90</td><td>—</td><td><span class="badge badge-success">✓</span></td></tr>
+                <tr><td>TurboSmash Burger</td><td><span class="badge" style="background:rgba(245,158,11,0.1);color:#92400e">Lanches</span></td><td>R$ 34,90</td><td>—</td><td><span class="badge badge-success">✓</span></td></tr>
+                <tr><td colspan="5" style="background:var(--gray-50)"><strong>🍕 Pizzas</strong></td></tr>
+                <tr><td>Pizza Calabresa G</td><td><span class="badge badge-primary">Pizzas</span></td><td>R$ 44,90</td><td>—</td><td><span class="badge badge-success">✓</span></td></tr>
+                <tr><td>Pizza Frango c/ Catupiry G</td><td><span class="badge badge-primary">Pizzas</span></td><td>R$ 46,90</td><td>—</td><td><span class="badge badge-success">✓</span></td></tr>
+                <tr><td>Pizza Margherita G</td><td><span class="badge badge-primary">Pizzas</span></td><td>R$ 42,90</td><td>—</td><td><span class="badge badge-success">✓</span></td></tr>
+                <tr><td colspan="5" style="background:var(--gray-50)"><strong>🥤 Bebidas</strong></td></tr>
+                <tr><td>Coca-Cola 2L</td><td><span class="badge badge-info">Bebidas</span></td><td>R$ 12,00</td><td>45 un.</td><td><span class="badge badge-success">✓</span></td></tr>
+                <tr><td>Suco de Laranja 500ml</td><td><span class="badge badge-info">Bebidas</span></td><td>R$ 10,00</td><td>30 un.</td><td><span class="badge badge-success">✓</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RF47: Listar Clientes -->
+      <div id="tab-clientes" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">👥 Lista de Clientes (ordem alfabética)</span>
+            <span class="badge badge-info">312 clientes</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead><tr><th>Nome Completo</th><th>E-mail</th><th>Telefone</th><th>CPF</th><th>Total Pedidos</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Ana Lima</strong></td><td>ana.lima@email.com</td><td>(28) 96666-3456</td><td>321.654.987-00</td><td>42</td></tr>
+                <tr><td><strong>João Carlos Souza</strong></td><td>joao@email.com</td><td>(28) 99999-1234</td><td>123.456.789-00</td><td>28</td></tr>
+                <tr><td><strong>Maria da Silva</strong></td><td>maria.silva@gmail.com</td><td>(28) 98888-5678</td><td>987.654.321-00</td><td>15</td></tr>
+                <tr><td><strong>Pedro Oliveira</strong></td><td>pedro.o@hotmail.com</td><td>(28) 97777-9012</td><td>456.789.123-00</td><td>7</td></tr>
+                <tr><td><strong>Roberto Costa</strong></td><td>roberto.c@gmail.com</td><td>(28) 95555-7890</td><td>654.321.987-00</td><td>1</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RF48: Listar Entregadores -->
+      <div id="tab-entregadores" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🛵 Lista de Entregadores (ordem alfabética)</span>
+            <span class="badge badge-info">9 entregadores</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead><tr><th>Nome</th><th>Status</th><th>Tipo de Veículo</th><th>Entregas</th><th>Avaliação Média</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Carlos Ferreira</strong></td><td><span class="badge badge-success">Disponível</span></td><td>🛵 Moto</td><td>127</td><td>⭐ 4.9</td></tr>
+                <tr><td><strong>Fernando Santos</strong></td><td><span class="badge badge-warning">Inativo</span></td><td>🛵 Moto</td><td>61</td><td>⭐ 1.8 <span class="badge badge-danger" style="font-size:0.6rem">⚠ Risco</span></td></tr>
+                <tr><td><strong>Lucas Mendes</strong></td><td><span class="badge badge-info">Em Entrega</span></td><td>🛵 Moto</td><td>89</td><td>⭐ 4.7</td></tr>
+                <tr><td><strong>Marcos Rocha</strong></td><td><span class="badge badge-success">Disponível</span></td><td>🛵 Moto</td><td>203</td><td>⭐ 4.8</td></tr>
+                <tr><td><strong>Paulo Andrade</strong></td><td><span class="badge badge-info">Em Entrega</span></td><td>🛵 Moto</td><td>52</td><td>⭐ 4.5</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RF49: Listar Veículos -->
+      <div id="tab-veiculos" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🚗 Lista de Veículos (ordem alfabética)</span>
+            <span class="badge badge-info">9 veículos</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead><tr><th>Modelo</th><th>Placa</th><th>Cor</th><th>Marca</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Biz 125</strong></td><td><span class="badge badge-dark">DEF-5678</span></td><td>Preta</td><td>Honda</td><td><span class="badge badge-success">Ativo</span></td></tr>
+                <tr><td><strong>CG 160</strong></td><td><span class="badge badge-dark">ABC-1234</span></td><td>Prata</td><td>Honda</td><td><span class="badge badge-success">Ativo</span></td></tr>
+                <tr><td><strong>E-Bike</strong></td><td><span class="badge badge-gray">—</span></td><td>Verde</td><td>Caloi</td><td><span class="badge badge-warning">Inativo</span></td></tr>
+                <tr><td><strong>Fan 125</strong></td><td><span class="badge badge-dark">GHI-9012</span></td><td>Vermelha</td><td>Yamaha</td><td><span class="badge badge-success">Ativo</span></td></tr>
+                <tr><td><strong>PCX 150</strong></td><td><span class="badge badge-dark">JKL-3456</span></td><td>Azul</td><td>Honda</td><td><span class="badge badge-success">Ativo</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RF50: Listar Pedidos -->
+      <div id="tab-pedidos" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📋 Lista de Pedidos (data decrescente)</span>
+            <span class="badge badge-info">47 pedidos hoje</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead><tr><th>#Pedido</th><th>Cliente</th><th>Total</th><th>Forma de Pag.</th><th>Status</th><th>Data/Hora</th></tr></thead>
+              <tbody>
+                <tr><td><strong>#0047</strong></td><td>João Carlos</td><td><strong>R$ 87,50</strong></td><td>PIX</td><td><span class="badge status-preparando">Preparando</span></td><td class="text-xs text-muted">17/05/2026 14:32</td></tr>
+                <tr><td><strong>#0046</strong></td><td>Maria Silva</td><td><strong>R$ 124,00</strong></td><td>Crédito</td><td><span class="badge status-em-entrega">Em Entrega</span></td><td class="text-xs text-muted">17/05/2026 14:15</td></tr>
+                <tr><td><strong>#0045</strong></td><td>Pedro Oliveira</td><td><strong>R$ 52,00</strong></td><td>Débito</td><td><span class="badge status-aguardando">Aguardando</span></td><td class="text-xs text-muted">17/05/2026 14:08</td></tr>
+                <tr><td><strong>#0044</strong></td><td>Ana Lima</td><td><strong>R$ 98,90</strong></td><td>PIX</td><td><span class="badge status-entregue">Entregue</span></td><td class="text-xs text-muted">17/05/2026 13:45</td></tr>
+                <tr><td><strong>#0043</strong></td><td>Roberto Costa</td><td><strong>R$ 29,90</strong></td><td>PIX</td><td><span class="badge status-cancelado">Cancelado</span></td><td class="text-xs text-muted">17/05/2026 13:20</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RF51: Listar Avaliações -->
+      <div id="tab-avaliacoes" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">⭐ Lista de Avaliações (data decrescente)</span>
+            <span class="badge badge-info">238 avaliações</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead><tr><th>Cliente</th><th>Pedido</th><th>Nota Comida</th><th>Nota Entrega</th><th>Data</th></tr></thead>
+              <tbody>
+                <tr><td>João Carlos</td><td>#0044</td><td><span class="text-warning font-bold">⭐ 5/5</span></td><td><span class="text-warning font-bold">⭐ 5/5</span></td><td class="text-xs text-muted">17/05/2026</td></tr>
+                <tr><td>Maria Silva</td><td>#0039</td><td><span class="text-warning font-bold">⭐ 4/5</span></td><td><span class="text-warning font-bold">⭐ 5/5</span></td><td class="text-xs text-muted">16/05/2026</td></tr>
+                <tr><td>Pedro Oliveira</td><td>#0035</td><td><span class="text-warning font-bold">⭐ 5/5</span></td><td><span class="text-danger font-bold">⭐ 2/5</span></td><td class="text-xs text-muted">15/05/2026</td></tr>
+                <tr><td>Ana Lima</td><td>#0031</td><td><span class="text-warning font-bold">⭐ 5/5</span></td><td><span class="text-warning font-bold">⭐ 5/5</span></td><td class="text-xs text-muted">14/05/2026</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RF52: Listar Pagamentos -->
+      <div id="tab-pagamentos" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">💳 Lista de Pagamentos (data decrescente)</span>
+            <div class="flex gap-2">
+              <span class="badge badge-success">✓ Aprovados: R$ 3.840</span>
+              <span class="badge badge-info">42 transações</span>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead><tr><th>#Pagamento</th><th>Pedido</th><th>Cliente</th><th>Valor</th><th>Forma</th><th>Status</th><th>Data</th></tr></thead>
+              <tbody>
+                <tr><td>PAG-0047</td><td>#0045</td><td>Pedro Oliveira</td><td>R$ 52,00</td><td>Débito</td><td><span class="badge status-aguardando">Aguardando</span></td><td class="text-xs text-muted">17/05/2026 14:08</td></tr>
+                <tr><td>PAG-0045</td><td>#0047</td><td>João Carlos</td><td>R$ 87,50</td><td>PIX</td><td><span class="badge badge-success">Aprovado</span></td><td class="text-xs text-muted">17/05/2026 14:32</td></tr>
+                <tr><td>PAG-0044</td><td>#0046</td><td>Maria Silva</td><td>R$ 124,00</td><td>Crédito</td><td><span class="badge badge-success">Aprovado</span></td><td class="text-xs text-muted">17/05/2026 14:15</td></tr>
+                <tr><td>PAG-0043</td><td>#0043</td><td>Roberto Costa</td><td>R$ 29,90</td><td>PIX</td><td><span class="badge badge-danger">Recusado</span></td><td class="text-xs text-muted">17/05/2026 13:20</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('mobile-overlay');
+    sidebar.classList.toggle('mobile-open');
+    if (overlay) overlay.classList.toggle('mobile-overlay-show');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('mobile-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        overlay.classList.remove('mobile-overlay-show');
+      });
+    }
+  });
+  function showTab(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+</script>
+<div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+</body>
+</html>

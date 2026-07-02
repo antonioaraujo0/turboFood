@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagamentos – TurboFood Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div><span class="sidebar-logo-name">TurboFood</span><span class="sidebar-logo-sub">Administrador</span></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Principal</div>
+      <a href="dashboard.html" class="sidebar-link"><span class="icon">🏠</span> Dashboard</a>
+      <a href="pedidos.html" class="sidebar-link"><span class="icon">📋</span> Pedidos <span class="sidebar-badge">5</span></a>
+      <a href="pagamentos.html" class="sidebar-link active"><span class="icon">💳</span> Pagamentos</a>
+      <div class="sidebar-section-title">Cadastros</div>
+      <a href="categorias.html" class="sidebar-link"><span class="icon">🏷️</span> Categorias</a>
+      <a href="produtos.html" class="sidebar-link"><span class="icon">🍕</span> Produtos</a>
+      <a href="clientes.html" class="sidebar-link"><span class="icon">👥</span> Clientes</a>
+      <a href="entregadores.html" class="sidebar-link"><span class="icon">🛵</span> Entregadores</a>
+      <a href="veiculos.html" class="sidebar-link"><span class="icon">🚗</span> Veículos</a>
+      <div class="sidebar-section-title">Relatórios</div>
+      <a href="avaliacoes.html" class="sidebar-link"><span class="icon">⭐</span> Avaliações</a>
+      <a href="relatorios.html" class="sidebar-link"><span class="icon">📊</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">RH</div>
+        <div><div class="sidebar-user-name">Roni Herculano</div><div class="sidebar-user-role">Gerente</div></div>
+        <a href="../index.html" class="sidebar-logout-btn">🚪</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+      <button class="sidebar-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div class="top-bar-title">
+        <h1>💳 Pagamentos</h1>
+        <p>Confirme e gerencie os pagamentos dos pedidos</p>
+      </div>
+      <div class="top-bar-right">
+        <button class="icon-btn">🔔<span class="dot">3</span></button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <div class="stats-grid mb-4" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-card">
+          <div class="stat-icon green">✅</div>
+          <div><div class="stat-value">R$ 3.840</div><div class="stat-label">Aprovados Hoje</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon yellow">⏳</div>
+          <div><div class="stat-value">3</div><div class="stat-label">Aguardando Confirmação</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">💳</div>
+          <div><div class="stat-value">42</div><div class="stat-label">Transações Hoje</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">🧾</div>
+          <div><div class="stat-value">R$ 91,40</div><div class="stat-label">Ticket Médio</div></div>
+        </div>
+      </div>
+
+      <!-- Aguardando Confirmação -->
+      <div class="alert alert-warning mb-4">
+        <span>⚠️</span>
+        <div>
+          <strong>3 pagamentos aguardando confirmação manual.</strong>
+          Pagamentos por cartão e débito precisam ser confirmados antes do pedido ir para a cozinha.
+          Lembre-se: o valor é recalculado no servidor antes da aprovação.
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Buscar por pedido, cliente..." oninput="filterTable(this.value)">
+          </div>
+          <select class="form-control" style="width:auto">
+            <option>Todos os status</option>
+            <option>Aguardando</option>
+            <option>Aprovado</option>
+            <option>Recusado</option>
+            <option>Estornado</option>
+          </select>
+          <select class="form-control" style="width:auto">
+            <option>Todas as formas</option>
+            <option>PIX</option>
+            <option>Crédito</option>
+            <option>Débito</option>
+          </select>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-secondary">📥 Exportar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="table" id="tablePagamentos">
+            <thead>
+              <tr>
+                <th>#Pagamento</th>
+                <th>Pedido</th>
+                <th>Cliente</th>
+                <th>Valor</th>
+                <th>Forma</th>
+                <th>Status</th>
+                <th>Data/Hora</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:rgba(245,158,11,0.04)">
+                <td><strong>PAG-0047</strong></td>
+                <td><a href="pedidos.html" class="text-primary font-semibold">#0045</a></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-green">PO</div>
+                    <span class="text-sm">Pedro Oliveira</span>
+                  </div>
+                </td>
+                <td><strong>R$ 52,00</strong></td>
+                <td>
+                  <span class="badge" style="background:rgba(59,130,246,0.1);color:#1e40af">💳 Débito</span>
+                </td>
+                <td><span class="badge status-aguardando">⏳ Aguardando</span></td>
+                <td class="text-xs text-muted">17/05/2026 14:08</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-success" onclick="openModal('modal-confirmar')">✓ Confirmar</button>
+                    <button class="btn btn-sm btn-danger">✕ Recusar</button>
+                  </div>
+                </td>
+              </tr>
+              <tr style="background:rgba(245,158,11,0.04)">
+                <td><strong>PAG-0046</strong></td>
+                <td><a href="pedidos.html" class="text-primary font-semibold">#0040</a></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-purple">AL</div>
+                    <span class="text-sm">Ana Lima</span>
+                  </div>
+                </td>
+                <td><strong>R$ 78,50</strong></td>
+                <td>
+                  <span class="badge" style="background:rgba(16,185,129,0.1);color:#065f46">💳 Crédito</span>
+                </td>
+                <td><span class="badge status-aguardando">⏳ Aguardando</span></td>
+                <td class="text-xs text-muted">17/05/2026 13:55</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-success" onclick="openModal('modal-confirmar')">✓ Confirmar</button>
+                    <button class="btn btn-sm btn-danger">✕ Recusar</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>PAG-0045</strong></td>
+                <td><a href="pedidos.html" class="text-primary font-semibold">#0047</a></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-orange">JC</div>
+                    <span class="text-sm">João Carlos</span>
+                  </div>
+                </td>
+                <td><strong>R$ 87,50</strong></td>
+                <td><span class="badge badge-success">⚡ PIX</span></td>
+                <td><span class="badge badge-success">✓ Aprovado</span></td>
+                <td class="text-xs text-muted">17/05/2026 14:32</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-detalhe-pag')">👁️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--warning)">↩️ Estornar</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>PAG-0044</strong></td>
+                <td><a href="pedidos.html" class="text-primary font-semibold">#0046</a></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-blue">MS</div>
+                    <span class="text-sm">Maria Silva</span>
+                  </div>
+                </td>
+                <td><strong>R$ 124,00</strong></td>
+                <td>
+                  <span class="badge" style="background:rgba(16,185,129,0.1);color:#065f46">💳 Crédito</span>
+                </td>
+                <td><span class="badge badge-success">✓ Aprovado</span></td>
+                <td class="text-xs text-muted">17/05/2026 14:15</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-detalhe-pag')">👁️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--warning)">↩️ Estornar</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>PAG-0043</strong></td>
+                <td><a href="pedidos.html" class="text-primary font-semibold">#0043</a></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-pink">RC</div>
+                    <span class="text-sm">Roberto Costa</span>
+                  </div>
+                </td>
+                <td><strong>R$ 29,90</strong></td>
+                <td><span class="badge badge-success">⚡ PIX</span></td>
+                <td><span class="badge badge-danger">✕ Recusado</span></td>
+                <td class="text-xs text-muted">17/05/2026 13:20</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-detalhe-pag')">👁️</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="pagination-info">Mostrando 5 de 42 pagamentos</span>
+          <div class="pagination-btns">
+            <button class="page-btn" disabled>‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL Confirmar Pagamento -->
+<div class="modal-overlay" id="modal-confirmar">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span class="modal-title"><span>💳</span> Confirmar Pagamento</span>
+      <button class="modal-close" onclick="closeModal('modal-confirmar')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-info mb-4">
+        <span>ℹ️</span>
+        <div>O valor total será recalculado automaticamente no servidor para evitar fraudes (RN01).</div>
+      </div>
+
+      <div class="card" style="border:2px solid var(--border)">
+        <div class="card-body" style="padding:16px">
+          <div class="flex justify-between mb-2">
+            <span class="text-sm text-muted">Pedido:</span>
+            <strong>#0045</strong>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span class="text-sm text-muted">Cliente:</span>
+            <span class="text-sm">Pedro Oliveira</span>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span class="text-sm text-muted">Forma:</span>
+            <span class="badge" style="background:rgba(59,130,246,0.1);color:#1e40af">💳 Débito</span>
+          </div>
+          <hr class="divider">
+          <div class="flex justify-between mb-1">
+            <span class="text-sm text-muted">Subtotal itens:</span>
+            <span class="text-sm">R$ 47,00</span>
+          </div>
+          <div class="flex justify-between mb-1">
+            <span class="text-sm text-muted">Taxa de entrega:</span>
+            <span class="text-sm">R$ 5,00</span>
+          </div>
+          <div class="flex justify-between font-bold" style="font-size:1.1rem;margin-top:8px">
+            <span>Total calculado:</span>
+            <span class="text-primary">R$ 52,00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group mt-4">
+        <label class="form-label">Observação (opcional)</label>
+        <textarea class="form-control" rows="2" placeholder="Ex: Confirmado via caixa físico..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-confirmar')">Cancelar</button>
+      <button class="btn btn-danger btn-sm" onclick="closeModal('modal-confirmar')">✕ Recusar</button>
+      <button class="btn btn-success" onclick="closeModal('modal-confirmar')">✓ Aprovar Pagamento</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL Detalhe Pagamento -->
+<div class="modal-overlay" id="modal-detalhe-pag">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span class="modal-title"><span>🧾</span> Detalhe – PAG-0045</span>
+      <button class="modal-close" onclick="closeModal('modal-detalhe-pag')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="flex flex-col gap-3">
+        <div class="flex justify-between"><span class="text-sm text-muted">Pedido:</span><strong>#0047</strong></div>
+        <div class="flex justify-between"><span class="text-sm text-muted">Cliente:</span><span>João Carlos</span></div>
+        <div class="flex justify-between"><span class="text-sm text-muted">Forma:</span><span class="badge badge-success">⚡ PIX</span></div>
+        <div class="flex justify-between"><span class="text-sm text-muted">Status:</span><span class="badge badge-success">✓ Aprovado</span></div>
+        <div class="flex justify-between"><span class="text-sm text-muted">Aprovado em:</span><span>17/05/2026 14:32</span></div>
+        <div class="flex justify-between"><span class="text-sm text-muted">Aprovado por:</span><span>Roni Herculano</span></div>
+        <hr class="divider">
+        <div class="flex justify-between"><span class="text-sm text-muted">Subtotal:</span><span>R$ 82,50</span></div>
+        <div class="flex justify-between"><span class="text-sm text-muted">Entrega:</span><span>R$ 5,00</span></div>
+        <div class="flex justify-between font-bold"><span>Total:</span><span class="text-primary">R$ 87,50</span></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-detalhe-pag')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('mobile-overlay');
+    sidebar.classList.toggle('mobile-open');
+    if (overlay) overlay.classList.toggle('mobile-overlay-show');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('mobile-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        overlay.classList.remove('mobile-overlay-show');
+      });
+    }
+  });
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  function filterTable(val) {
+    document.querySelectorAll('#tablePagamentos tbody tr').forEach(row => {
+      row.style.display = !val || row.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+</script>
+<div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard – TurboFood Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div>
+        <span class="sidebar-logo-name">TurboFood</span>
+        <span class="sidebar-logo-sub">Administrador</span>
+      </div>
+    </a>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Principal</div>
+      <a href="dashboard.html" class="sidebar-link active">
+        <span class="icon">🏠</span> Dashboard
+      </a>
+      <a href="pedidos.html" class="sidebar-link">
+        <span class="icon">📋</span> Pedidos
+        <span class="sidebar-badge">5</span>
+      </a>
+      <a href="pagamentos.html" class="sidebar-link">
+        <span class="icon">💳</span> Pagamentos
+      </a>
+
+      <div class="sidebar-section-title">Cadastros</div>
+      <a href="categorias.html" class="sidebar-link">
+        <span class="icon">🏷️</span> Categorias
+      </a>
+      <a href="produtos.html" class="sidebar-link">
+        <span class="icon">🍕</span> Produtos
+      </a>
+      <a href="clientes.html" class="sidebar-link">
+        <span class="icon">👥</span> Clientes
+      </a>
+      <a href="entregadores.html" class="sidebar-link">
+        <span class="icon">🛵</span> Entregadores
+      </a>
+      <a href="veiculos.html" class="sidebar-link">
+        <span class="icon">🚗</span> Veículos
+      </a>
+
+      <div class="sidebar-section-title">Relatórios</div>
+      <a href="avaliacoes.html" class="sidebar-link">
+        <span class="icon">⭐</span> Avaliações
+      </a>
+      <a href="relatorios.html" class="sidebar-link">
+        <span class="icon">📊</span> Relatórios
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">RH</div>
+        <div>
+          <div class="sidebar-user-name">Roni Herculano</div>
+          <div class="sidebar-user-role">Gerente</div>
+        </div>
+        <a href="../index.html" class="sidebar-logout-btn" title="Sair">🚪</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="sidebar-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+        <div class="top-bar-title">
+          <h1>Dashboard</h1>
+          <p>Bem-vindo, Roni! Aqui está o resumo de hoje.</p>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <button class="icon-btn" title="Notificações">
+          🔔
+          <span class="dot">3</span>
+        </button>
+        <button class="icon-btn" title="Configurações">⚙️</button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon orange">📋</div>
+          <div>
+            <div class="stat-value">47</div>
+            <div class="stat-label">Pedidos Hoje</div>
+            <div class="stat-change up">▲ 12% vs ontem</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">💰</div>
+          <div>
+            <div class="stat-value">R$ 3.840</div>
+            <div class="stat-label">Receita Hoje</div>
+            <div class="stat-change up">▲ 8% vs ontem</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">👥</div>
+          <div>
+            <div class="stat-value">312</div>
+            <div class="stat-label">Clientes Ativos</div>
+            <div class="stat-change up">▲ 5 novos hoje</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple">🛵</div>
+          <div>
+            <div class="stat-value">6</div>
+            <div class="stat-label">Entregadores Disponíveis</div>
+            <div class="stat-change down">▼ 2 em entrega</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon yellow">⏳</div>
+          <div>
+            <div class="stat-value">5</div>
+            <div class="stat-label">Pedidos Aguardando</div>
+            <div class="stat-change up">▲ Ação necessária</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon pink">⭐</div>
+          <div>
+            <div class="stat-value">4.8</div>
+            <div class="stat-label">Avaliação Média</div>
+            <div class="stat-change up">▲ 0.2 esta semana</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 gap-4 mb-4">
+
+        <!-- Últimos Pedidos -->
+        <div class="card" style="grid-column: span 2">
+          <div class="card-header">
+            <span class="card-title"><span class="card-title-icon">📋</span> Últimos Pedidos</span>
+            <a href="pedidos.html" class="btn btn-sm btn-outline">Ver todos</a>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#Pedido</th>
+                  <th>Cliente</th>
+                  <th>Itens</th>
+                  <th>Total</th>
+                  <th>Pagamento</th>
+                  <th>Status</th>
+                  <th>Horário</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>#0047</strong></td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <div class="avatar avatar-sm avatar-orange">JC</div>
+                      <span>João Carlos</span>
+                    </div>
+                  </td>
+                  <td>3 itens</td>
+                  <td><strong>R$ 87,50</strong></td>
+                  <td><span class="badge badge-success">PIX ✓</span></td>
+                  <td><span class="badge status-preparando">🍳 Preparando</span></td>
+                  <td class="text-muted text-sm">14:32</td>
+                  <td>
+                    <a href="pedidos.html" class="btn btn-sm btn-ghost">Ver →</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>#0046</strong></td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <div class="avatar avatar-sm avatar-blue">MS</div>
+                      <span>Maria Silva</span>
+                    </div>
+                  </td>
+                  <td>5 itens</td>
+                  <td><strong>R$ 124,00</strong></td>
+                  <td><span class="badge badge-success">Crédito ✓</span></td>
+                  <td><span class="badge status-em-entrega">🛵 Em Entrega</span></td>
+                  <td class="text-muted text-sm">14:15</td>
+                  <td>
+                    <a href="pedidos.html" class="btn btn-sm btn-ghost">Ver →</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>#0045</strong></td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <div class="avatar avatar-sm avatar-green">PO</div>
+                      <span>Pedro Oliveira</span>
+                    </div>
+                  </td>
+                  <td>2 itens</td>
+                  <td><strong>R$ 52,00</strong></td>
+                  <td><span class="badge badge-warning">Débito ⏳</span></td>
+                  <td><span class="badge status-aguardando">⏳ Aguardando</span></td>
+                  <td class="text-muted text-sm">14:08</td>
+                  <td>
+                    <a href="pedidos.html" class="btn btn-sm btn-ghost">Ver →</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>#0044</strong></td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <div class="avatar avatar-sm avatar-purple">AL</div>
+                      <span>Ana Lima</span>
+                    </div>
+                  </td>
+                  <td>4 itens</td>
+                  <td><strong>R$ 98,90</strong></td>
+                  <td><span class="badge badge-success">PIX ✓</span></td>
+                  <td><span class="badge status-entregue">✅ Entregue</span></td>
+                  <td class="text-muted text-sm">13:45</td>
+                  <td>
+                    <a href="pedidos.html" class="btn btn-sm btn-ghost">Ver →</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>#0043</strong></td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <div class="avatar avatar-sm avatar-pink">RC</div>
+                      <span>Roberto Costa</span>
+                    </div>
+                  </td>
+                  <td>1 item</td>
+                  <td><strong>R$ 29,90</strong></td>
+                  <td><span class="badge badge-danger">Cancelado</span></td>
+                  <td><span class="badge status-cancelado">❌ Cancelado</span></td>
+                  <td class="text-muted text-sm">13:20</td>
+                  <td>
+                    <a href="pedidos.html" class="btn btn-sm btn-ghost">Ver →</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 gap-4">
+        <!-- Status dos Pedidos -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="card-title-icon">📊</span> Pedidos por Status</span>
+          </div>
+          <div class="card-body">
+            <div class="flex flex-col gap-3">
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-sm font-semibold">Aguardando</span>
+                  <span class="text-sm text-muted">5 pedidos</span>
+                </div>
+                <div class="progress"><div class="progress-bar orange" style="width:11%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-sm font-semibold">Preparando</span>
+                  <span class="text-sm text-muted">8 pedidos</span>
+                </div>
+                <div class="progress"><div class="progress-bar purple" style="width:17%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-sm font-semibold">Em Entrega</span>
+                  <span class="text-sm text-muted">6 pedidos</span>
+                </div>
+                <div class="progress"><div class="progress-bar blue" style="width:13%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-sm font-semibold">Entregues Hoje</span>
+                  <span class="text-sm text-muted">28 pedidos</span>
+                </div>
+                <div class="progress"><div class="progress-bar green" style="width:60%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Entregadores Ativos -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><span class="card-title-icon">🛵</span> Entregadores</span>
+            <a href="entregadores.html" class="btn btn-sm btn-outline">Gerenciar</a>
+          </div>
+          <div class="card-body flex flex-col gap-3">
+            <div class="flex items-center gap-3">
+              <div class="avatar avatar-orange">CF</div>
+              <div class="flex-1">
+                <div class="font-semibold text-sm">Carlos Ferreira</div>
+                <div class="text-xs text-muted">Honda CG 160 – ABC-1234</div>
+              </div>
+              <span class="badge badge-success">Disponível</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="avatar avatar-blue">LM</div>
+              <div class="flex-1">
+                <div class="font-semibold text-sm">Lucas Mendes</div>
+                <div class="text-xs text-muted">Biz 125 – DEF-5678</div>
+              </div>
+              <span class="badge badge-info">Em Entrega</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="avatar avatar-purple">PA</div>
+              <div class="flex-1">
+                <div class="font-semibold text-sm">Paulo Andrade</div>
+                <div class="text-xs text-muted">Fan 125 – GHI-9012</div>
+              </div>
+              <span class="badge badge-info">Em Entrega</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="avatar avatar-green">MR</div>
+              <div class="flex-1">
+                <div class="font-semibold text-sm">Marcos Rocha</div>
+                <div class="text-xs text-muted">PCX 150 – JKL-3456</div>
+              </div>
+              <span class="badge badge-success">Disponível</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // Toggle sidebar on mobile
+  document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('sidebar');
+    if (window.innerWidth <= 1024) {
+      sidebar.classList.remove('mobile-open');
+    }
+  });
+</script>
+<div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+</body>
+</html>

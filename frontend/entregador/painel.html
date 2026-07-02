@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Entregador – TurboFood</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR do Entregador -->
+  <aside class="sidebar">
+    <a href="#" class="sidebar-logo">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div><span class="sidebar-logo-name">TurboFood</span><span class="sidebar-logo-sub">Entregador</span></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Menu</div>
+      <a href="#" class="sidebar-link active"><span class="icon">🏠</span> Painel</a>
+      <a href="#" class="sidebar-link"><span class="icon">📦</span> Entregas Disponíveis <span class="sidebar-badge">3</span></a>
+      <a href="#" class="sidebar-link"><span class="icon">🛵</span> Minhas Entregas</a>
+      <a href="#" class="sidebar-link"><span class="icon">📋</span> Histórico</a>
+      <a href="#" class="sidebar-link"><span class="icon">⭐</span> Avaliações</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">CF</div>
+        <div>
+          <div class="sidebar-user-name">Carlos Ferreira</div>
+          <div class="sidebar-user-role">Entregador</div>
+        </div>
+        <a href="../index.html" class="sidebar-logout-btn">🚪</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+      <button class="sidebar-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div class="top-bar-title">
+        <h1>🛵 Meu Painel</h1>
+        <p>Olá, Carlos! Bom dia. Você está disponível.</p>
+      </div>
+      <div class="top-bar-right">
+        <!-- Status Toggle -->
+        <div class="flex items-center gap-2 p-2" style="background:var(--success-light);border-radius:var(--radius-sm);border:1px solid var(--success)">
+          <label class="toggle-wrap">
+            <input type="checkbox" class="toggle-inp" id="statusToggle" checked>
+            <span class="toggle"></span>
+            <span class="toggle-label-text text-sm font-semibold text-success">Disponível</span>
+          </label>
+        </div>
+        <button class="icon-btn">🔔<span class="dot">2</span></button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Stats do Entregador -->
+      <div class="delivery-stats">
+        <div class="delivery-stat-card">
+          <div style="font-size:1.8rem">🛵</div>
+          <div class="stat-value">12</div>
+          <div class="stat-label">Entregas Hoje</div>
+        </div>
+        <div class="delivery-stat-card">
+          <div style="font-size:1.8rem">💰</div>
+          <div class="stat-value">R$ 240</div>
+          <div class="stat-label">Ganhos Hoje</div>
+        </div>
+        <div class="delivery-stat-card">
+          <div style="font-size:1.8rem">⭐</div>
+          <div class="stat-value">4.9</div>
+          <div class="stat-label">Avaliação</div>
+        </div>
+        <div class="delivery-stat-card">
+          <div style="font-size:1.8rem">⏱️</div>
+          <div class="stat-value">22 min</div>
+          <div class="stat-label">Tempo Médio</div>
+        </div>
+      </div>
+
+      <!-- Alerta de jornada -->
+      <div class="alert alert-warning mb-4">
+        ⏰ Você trabalhou <strong>4h 30min</strong> hoje. Limite de jornada: 8 horas (RN02).
+        <div class="progress mt-2" style="height:6px">
+          <div class="progress-bar orange" style="width:56%"></div>
+        </div>
+      </div>
+
+      <div class="grid-2 gap-4">
+
+        <!-- Entregas Disponíveis para Pegar -->
+        <div>
+          <div class="card mb-4">
+            <div class="card-header">
+              <span class="card-title">📦 Entregas Disponíveis</span>
+              <span class="badge badge-info">3 pedidos prontos</span>
+            </div>
+            <div class="card-body flex flex-col gap-3">
+
+              <div style="border:2px solid var(--primary);border-radius:var(--radius-sm);padding:14px;background:var(--primary-bg)">
+                <div class="flex justify-between items-start mb-2">
+                  <strong>#0040 – Ana Lima</strong>
+                  <span class="badge badge-primary">Agrupado</span>
+                </div>
+                <div class="text-sm text-muted mb-2">
+                  📍 Rua das Flores, 123 – Centro<br>
+                  <span class="text-xs">Ref: Próximo ao supermercado</span>
+                </div>
+                <div class="flex justify-between text-sm mb-3">
+                  <span>🎁 Combo Família + 2 Sobremesas</span>
+                  <span class="font-bold text-primary">Taxa: R$ 5,00</span>
+                </div>
+                <div class="flex gap-2">
+                  <button class="btn btn-sm btn-secondary flex-1" onclick="openModal('modal-detalhe')">👁️ Ver detalhes</button>
+                  <button class="btn btn-sm btn-primary flex-1" onclick="aceitarEntrega()">✓ Aceitar Entrega</button>
+                </div>
+              </div>
+
+              <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px">
+                <div class="flex justify-between items-start mb-2">
+                  <strong>#0038 – Carla Mendes</strong>
+                  <span class="badge badge-gray">1 pedido</span>
+                </div>
+                <div class="text-sm text-muted mb-2">
+                  📍 Av. Presidente Vargas, 456 – Bairro Novo
+                </div>
+                <div class="flex justify-between text-sm mb-3">
+                  <span>🍕 Pizza Calabresa M × 1</span>
+                  <span class="font-bold text-primary">Taxa: R$ 7,00</span>
+                </div>
+                <div class="flex gap-2">
+                  <button class="btn btn-sm btn-secondary flex-1" onclick="openModal('modal-detalhe')">👁️ Ver detalhes</button>
+                  <button class="btn btn-sm btn-primary flex-1">✓ Aceitar Entrega</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Entrega Atual Ativa -->
+        <div>
+          <div class="card mb-4">
+            <div class="card-header">
+              <span class="card-title">🛵 Entrega Atual</span>
+              <span class="badge badge-info">Em andamento</span>
+            </div>
+            <div class="card-body">
+
+              <!-- Mapa placeholder -->
+              <div class="delivery-map-placeholder">
+                <div class="map-icon">🗺️</div>
+                <p>Mapa de navegação</p>
+                <p style="font-size:0.8rem;opacity:0.7">Integração com Google Maps</p>
+              </div>
+
+              <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px">
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <div class="font-bold">#0042 – Roberto Costa</div>
+                    <div class="text-xs text-muted badge badge-success mt-1">💳 Pago via PIX</div>
+                  </div>
+                  <span class="badge status-em-entrega">🛵 Em Entrega</span>
+                </div>
+                <div class="text-sm mb-3">
+                  📍 <strong>Rua Brasil, 789 – Vila Nova</strong><br>
+                  <span class="text-muted text-xs">Cachoeiro de Itapemirim – ES</span><br>
+                  <span class="text-xs text-muted">Ref: Casa amarela ao lado da padaria</span>
+                </div>
+                <div class="flex flex-col gap-1 text-sm mb-3">
+                  <div class="flex justify-between"><span class="text-muted">1x Pizza Frango Catupiry G</span><span>R$ 46,90</span></div>
+                  <div class="flex justify-between"><span class="text-muted">1x Coca-Cola 2L</span><span>R$ 12,00</span></div>
+                </div>
+                <div class="flex gap-2">
+                  <button class="btn btn-sm btn-warning flex-1" onclick="openModal('modal-nao-entregue')">⚠️ Problema</button>
+                  <button class="btn btn-sm btn-success flex-1" onclick="openModal('modal-confirmar-entrega')">📦 Confirmar Entrega</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Histórico do dia -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">📋 Entregas de Hoje</span>
+              <span class="badge badge-success">12 concluídas</span>
+            </div>
+            <div class="card-body flex flex-col gap-2">
+              <div class="flex justify-between items-center text-sm">
+                <div><strong>#0036</strong> – Maria Silva <span class="text-muted">14:05</span></div>
+                <div class="flex gap-2">
+                  <span class="badge status-entregue">✓ Entregue</span>
+                  <span class="text-xs text-warning">⭐ 5/5</span>
+                </div>
+              </div>
+              <div class="flex justify-between items-center text-sm">
+                <div><strong>#0033</strong> – João Carlos <span class="text-muted">13:42</span></div>
+                <div class="flex gap-2">
+                  <span class="badge status-entregue">✓ Entregue</span>
+                  <span class="text-xs text-warning">⭐ 5/5</span>
+                </div>
+              </div>
+              <div class="flex justify-between items-center text-sm">
+                <div><strong>#0030</strong> – Ana Lima <span class="text-muted">13:10</span></div>
+                <div class="flex gap-2">
+                  <span class="badge status-entregue">✓ Entregue</span>
+                  <span class="text-xs text-warning">⭐ 4/5</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL Detalhe da Entrega -->
+<div class="modal-overlay" id="modal-detalhe">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><span>📦</span> Detalhe – Pedido #0040</span>
+      <button class="modal-close" onclick="closeModal('modal-detalhe')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="flex flex-col gap-3">
+        <div><p class="text-xs text-muted font-semibold">CLIENTE</p><p class="font-semibold">Ana Lima</p><p class="text-sm text-muted">📞 (28) 96666-3456</p></div>
+        <div><p class="text-xs text-muted font-semibold">ENDEREÇO</p><p class="text-sm">Rua das Flores, 123 – Centro</p><p class="text-xs text-muted">Cachoeiro de Itapemirim – ES, CEP: 29300-000</p><p class="text-xs text-muted">Ref: Próximo ao supermercado</p></div>
+        <div><p class="text-xs text-muted font-semibold">ITENS</p><div class="text-sm">🎁 Combo Família × 1<br>🍰 Petit Gâteau × 2</div></div>
+        <div class="flex justify-between font-bold"><span>Taxa de Entrega:</span><span class="text-primary">R$ 5,00</span></div>
+        <div class="alert alert-info" style="font-size:0.8rem">
+          ⚠️ Este pedido faz parte de um agrupamento de 2 entregas na mesma rota (limite: 5 pedidos por entrega – RN01).
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-detalhe')">Fechar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-detalhe'); aceitarEntrega()">✓ Aceitar Entrega</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL Confirmar Entrega -->
+<div class="modal-overlay" id="modal-confirmar-entrega">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span class="modal-title"><span>📦</span> Confirmar Entrega</span>
+      <button class="modal-close" onclick="closeModal('modal-confirmar-entrega')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="text-center mb-4">
+        <div style="font-size:3rem">📦</div>
+        <h3 class="font-bold mt-2">Pedido #0042 entregue?</h3>
+        <p class="text-sm text-muted mt-1">Confirme que o pedido foi entregue ao cliente.</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Observação (opcional)</label>
+        <textarea class="form-control" rows="2" placeholder="Ex: Deixei na portaria..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-confirmar-entrega')">Cancelar</button>
+      <button class="btn btn-success" onclick="closeModal('modal-confirmar-entrega')">✅ Confirmar Entrega!</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL Problema na Entrega -->
+<div class="modal-overlay" id="modal-nao-entregue">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span class="modal-title"><span>⚠️</span> Reportar Problema</span>
+      <button class="modal-close" onclick="closeModal('modal-nao-entregue')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group mb-3">
+        <label class="form-label req">Motivo do Problema</label>
+        <select class="form-control">
+          <option>Cliente não atendeu</option>
+          <option>Endereço não encontrado</option>
+          <option>Cliente recusou o pedido</option>
+          <option>Problema com o pedido</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descrição</label>
+        <textarea class="form-control" rows="3" placeholder="Descreva o que aconteceu..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-nao-entregue')">Cancelar</button>
+      <button class="btn btn-warning" onclick="closeModal('modal-nao-entregue')">📋 Enviar Relatório</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('mobile-overlay');
+    sidebar.classList.toggle('mobile-open');
+    if (overlay) overlay.classList.toggle('mobile-overlay-show');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('mobile-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        overlay.classList.remove('mobile-overlay-show');
+      });
+    }
+  });
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+  function aceitarEntrega() {
+    const btn = event ? event.target : null;
+    if (btn) {
+      btn.textContent = '✓ Aceito!';
+      btn.disabled = true;
+      btn.style.background = 'var(--success)';
+    }
+    closeModal('modal-detalhe');
+  }
+
+  // Toggle status
+  document.getElementById('statusToggle').addEventListener('change', function() {
+    const el = this.nextElementSibling.nextElementSibling;
+    if (this.checked) {
+      el.textContent = 'Disponível';
+      el.className = 'toggle-label-text text-sm font-semibold text-success';
+      this.parentElement.parentElement.style.background = 'var(--success-light)';
+      this.parentElement.parentElement.style.borderColor = 'var(--success)';
+    } else {
+      el.textContent = 'Inativo';
+      el.className = 'toggle-label-text text-sm font-semibold text-muted';
+      this.parentElement.parentElement.style.background = 'var(--gray-100)';
+      this.parentElement.parentElement.style.borderColor = 'var(--border)';
+    }
+  });
+
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+</script>
+<div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+</body>
+</html>

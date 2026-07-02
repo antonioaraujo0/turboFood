@@ -3,84 +3,148 @@
  *
  * Relatórios do processo de avaliação.
  *
- * Relatório 1 – Avaliações por Bairro e Período
- *   Filtragem:  período de datas (WHERE)
- *   Agregação:  total de avaliações, média de nota da comida e da entrega por bairro (GROUP BY)
+ * Relatório 1 – Avaliações por Bairro e Período (média de comida/entrega por bairro)
+ * Relatório 2 – Desempenho de Entregadores por Período (entregas, médias, negativas)
  *
- * Relatório 2 – Desempenho de Entregadores por Período
- *   Filtragem:  período de datas + somente entregas concluídas (WHERE)
- *   Agregação:  total de entregas, médias e total de avaliações negativas por entregador (GROUP BY)
+ * Reescrito com o ORM do Sequelize e agregação em JS — portável Postgres/SQLite.
+ * A versão anterior usava SQL cru com colunas/joins inválidos no schema atual
+ * (et.nome, et.ativo, e.pedidoId, p.enderecoId, tabela Enderecos).
  */
 
-const { QueryTypes } = require('sequelize');
-const { sequelize } = require('../models');
+const { Op } = require("sequelize");
+const { Avaliacao, Entrega } = require("../models");
+
+const num = (v) => Number(v || 0);
+const media = (soma, qtd) => (qtd ? Number((soma / qtd).toFixed(2)) : null);
 
 /**
  * Relatório 1 – Avaliações por Bairro e Período.
- *
- * Identifica quais regiões concentram as melhores ou piores avaliações,
- * útil para decisões de logística e atendimento.
  * Ordenado pelos bairros com pior média de entrega primeiro.
  */
 async function findAvaliacoesByBairroAndPeriodo(req) {
   const { inicio, termino } = req.params;
 
-  const objs = await sequelize.query(
-    `SELECT
-       en.bairro                           AS bairro,
-       en.cidade                           AS cidade,
-       COUNT(av.id)                        AS totalAvaliacoes,
-       ROUND(AVG(av.notaComida),  2)       AS mediaNotaComida,
-       ROUND(AVG(av.notaEntrega), 2)       AS mediaNotaEntrega
-     FROM Avaliacoes av
-     INNER JOIN Pedidos   p  ON p.id  = av.pedidoId
-     INNER JOIN Enderecos en ON en.id = p.enderecoId
-     WHERE av.createdAt BETWEEN :inicio AND :termino
-     GROUP BY en.bairro, en.cidade
-     ORDER BY mediaNotaEntrega ASC`,
-    {
-      replacements: { inicio, termino },
-      type: QueryTypes.SELECT,
-    }
-  );
+  const avaliacoes = await Avaliacao.findAll({
+    where: { createdAt: { [Op.between]: [inicio, termino] } },
+    include: [
+      {
+        association: "pedido",
+        attributes: ["id"],
+        include: [
+          {
+            association: "enderecoEntrega",
+            attributes: ["bairro", "cidade"],
+          },
+        ],
+      },
+    ],
+  });
 
-  return objs;
+  const mapa = {};
+  for (const a of avaliacoes) {
+    const j = a.toJSON();
+    const ee = (j.pedido && j.pedido.enderecoEntrega) || {};
+    const bairro = ee.bairro || "(sem bairro)";
+    const cidade = ee.cidade || "(sem cidade)";
+    const chave = `${bairro}||${cidade}`;
+    if (!mapa[chave]) {
+      mapa[chave] = {
+        bairro,
+        cidade,
+        totalAvaliacoes: 0,
+        somaComida: 0,
+        somaEntrega: 0,
+      };
+    }
+    const g = mapa[chave];
+    g.totalAvaliacoes += 1;
+    g.somaComida += num(j.notaComida);
+    g.somaEntrega += num(j.notaEntrega);
+  }
+
+  return Object.values(mapa)
+    .map((g) => ({
+      bairro: g.bairro,
+      cidade: g.cidade,
+      totalAvaliacoes: g.totalAvaliacoes,
+      mediaNotaComida: media(g.somaComida, g.totalAvaliacoes),
+      mediaNotaEntrega: media(g.somaEntrega, g.totalAvaliacoes),
+    }))
+    .sort((a, b) => (a.mediaNotaEntrega || 0) - (b.mediaNotaEntrega || 0));
 }
 
 /**
  * Relatório 2 – Desempenho de Entregadores por Período.
- *
- * Ranking de desempenho dos entregadores com total de entregas,
- * médias de nota e total de avaliações negativas.
- * Útil para monitorar quem está em risco de corte pela RN01.
+ * Considera entregas ENTREGUE com dataConclusao no período.
  * Ordenado pelos entregadores com pior média de entrega primeiro.
  */
 async function findDesempenhoEntregadoresByPeriodo(req) {
   const { inicio, termino } = req.params;
 
-  const objs = await sequelize.query(
-    `SELECT
-       et.nome                                                AS nomeEntregador,
-       et.ativo,
-       COUNT(e.id)                                            AS totalEntregas,
-       ROUND(AVG(av.notaEntrega), 2)                          AS mediaNotaEntrega,
-       ROUND(AVG(av.notaComida),  2)                          AS mediaNotaComida,
-       SUM(CASE WHEN av.notaEntrega < 2 THEN 1 ELSE 0 END)   AS totalAvaliacoesNegativas
-     FROM Entregadores et
-     INNER JOIN Entregas   e  ON e.entregadorId = et.id
-     INNER JOIN Pedidos    p  ON p.id           = e.pedidoId
-     INNER JOIN Avaliacoes av ON av.pedidoId    = p.id
-     WHERE e.status        = 'ENTREGUE'
-       AND e.dataConclusao BETWEEN :inicio AND :termino
-     GROUP BY et.id, et.nome, et.ativo
-     ORDER BY mediaNotaEntrega ASC`,
-    {
-      replacements: { inicio, termino },
-      type: QueryTypes.SELECT,
-    }
-  );
+  const entregas = await Entrega.findAll({
+    where: {
+      status: "ENTREGUE",
+      dataConclusao: { [Op.between]: [inicio, termino] },
+    },
+    include: [
+      {
+        association: "entregador",
+        attributes: ["id", "nomeCompleto", "status"],
+      },
+      {
+        association: "pedidos",
+        attributes: ["id"],
+        include: [
+          { association: "avaliacao", attributes: ["notaComida", "notaEntrega"] },
+        ],
+      },
+    ],
+  });
 
-  return objs;
+  const mapa = {};
+  for (const e of entregas) {
+    const j = e.toJSON();
+    const ent = j.entregador;
+    if (!ent) continue;
+    if (!mapa[ent.id]) {
+      mapa[ent.id] = {
+        entregadorId: ent.id,
+        nomeEntregador: ent.nomeCompleto,
+        status: ent.status,
+        totalEntregas: 0,
+        somaEntrega: 0,
+        somaComida: 0,
+        qtdAvaliacoes: 0,
+        totalAvaliacoesNegativas: 0,
+      };
+    }
+    const g = mapa[ent.id];
+    g.totalEntregas += 1;
+    for (const p of j.pedidos || []) {
+      if (p.avaliacao) {
+        g.qtdAvaliacoes += 1;
+        g.somaEntrega += num(p.avaliacao.notaEntrega);
+        g.somaComida += num(p.avaliacao.notaComida);
+        if (num(p.avaliacao.notaEntrega) < 2) g.totalAvaliacoesNegativas += 1;
+      }
+    }
+  }
+
+  return Object.values(mapa)
+    .map((g) => ({
+      entregadorId: g.entregadorId,
+      nomeEntregador: g.nomeEntregador,
+      status: g.status,
+      totalEntregas: g.totalEntregas,
+      totalAvaliacoes: g.qtdAvaliacoes,
+      mediaNotaEntrega: media(g.somaEntrega, g.qtdAvaliacoes),
+      mediaNotaComida: media(g.somaComida, g.qtdAvaliacoes),
+      totalAvaliacoesNegativas: g.totalAvaliacoesNegativas,
+    }))
+    .sort((a, b) => (a.mediaNotaEntrega || 0) - (b.mediaNotaEntrega || 0));
 }
 
-module.exports = { findAvaliacoesByBairroAndPeriodo, findDesempenhoEntregadoresByPeriodo };
+module.exports = {
+  findAvaliacoesByBairroAndPeriodo,
+  findDesempenhoEntregadoresByPeriodo,
+};

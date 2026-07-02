@@ -65,6 +65,12 @@ const Entregador = sequelize.define('Entregador', {
     type: DataTypes.ENUM('ativo', 'inativo', 'em_entrega'),
     defaultValue: 'ativo',
   },
+  // Contagem de avaliações recebidas (RN01 avaliação: desligamento após 50).
+  totalAvaliacoes: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
 }, {
   tableName: 'entregadores',
   timestamps: true,

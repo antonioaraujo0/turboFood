@@ -6,8 +6,8 @@
  * RF03  – Comentário opcional em texto
  * RNF01 – Avaliação submetida não pode ter notas alteradas
  * RNF02 – Disponível 24/7
- * RN01  – Entregador desligado se média < 2 após 50 entregas
- * RN02  – Avaliação só aceita até 7 dias após conclusão da entrega
+ * RN01  – Entregador desligado se média < 2 após 50 avaliações
+ * RN02  – Cliente só pode avaliar após 7 dias da confirmação da entrega
  */
 
 const AvaliacaoService = require('../services/AvaliacaoService');

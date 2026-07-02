@@ -43,6 +43,10 @@ const Pedido = sequelize.define('Pedido', {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  entregaId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   observacao: {
     type: DataTypes.TEXT,
     allowNull: true,

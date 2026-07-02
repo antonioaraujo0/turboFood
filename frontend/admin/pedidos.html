@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedidos – TurboFood Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div><span class="sidebar-logo-name">TurboFood</span><span class="sidebar-logo-sub">Administrador</span></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Principal</div>
+      <a href="dashboard.html" class="sidebar-link"><span class="icon">🏠</span> Dashboard</a>
+      <a href="pedidos.html" class="sidebar-link active"><span class="icon">📋</span> Pedidos <span class="sidebar-badge">5</span></a>
+      <a href="pagamentos.html" class="sidebar-link"><span class="icon">💳</span> Pagamentos</a>
+      <div class="sidebar-section-title">Cadastros</div>
+      <a href="categorias.html" class="sidebar-link"><span class="icon">🏷️</span> Categorias</a>
+      <a href="produtos.html" class="sidebar-link"><span class="icon">🍕</span> Produtos</a>
+      <a href="clientes.html" class="sidebar-link"><span class="icon">👥</span> Clientes</a>
+      <a href="entregadores.html" class="sidebar-link"><span class="icon">🛵</span> Entregadores</a>
+      <a href="veiculos.html" class="sidebar-link"><span class="icon">🚗</span> Veículos</a>
+      <div class="sidebar-section-title">Relatórios</div>
+      <a href="avaliacoes.html" class="sidebar-link"><span class="icon">⭐</span> Avaliações</a>
+      <a href="relatorios.html" class="sidebar-link"><span class="icon">📊</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">RH</div>
+        <div><div class="sidebar-user-name">Roni Herculano</div><div class="sidebar-user-role">Gerente</div></div>
+        <a href="../index.html" class="sidebar-logout-btn">🚪</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+      <button class="sidebar-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div class="top-bar-title">
+        <h1>📋 Pedidos</h1>
+        <p>Gerencie e acompanhe todos os pedidos</p>
+      </div>
+      <div class="top-bar-right">
+        <button class="icon-btn">🔔<span class="dot">5</span></button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Status Pills Filter -->
+      <div class="tabs-nav mb-4" style="border-bottom:none; gap:8px; flex-wrap:wrap">
+        <button class="btn btn-sm" style="background:#f3f4f6;color:var(--text);border:1.5px solid var(--border)" onclick="filterStatus('all')">Todos (47)</button>
+        <button class="btn btn-sm" style="background:#fef3c7;color:#92400e;border:1.5px solid #fde68a" onclick="filterStatus('aguardando')">⏳ Aguardando (5)</button>
+        <button class="btn btn-sm" style="background:#dbeafe;color:#1e40af;border:1.5px solid #bfdbfe" onclick="filterStatus('confirmado')">✓ Confirmado (3)</button>
+        <button class="btn btn-sm" style="background:rgba(139,92,246,0.1);color:#5b21b6;border:1.5px solid rgba(139,92,246,0.3)" onclick="filterStatus('preparando')">🍳 Preparando (8)</button>
+        <button class="btn btn-sm" style="background:rgba(6,182,212,0.1);color:#155e75;border:1.5px solid rgba(6,182,212,0.3)" onclick="filterStatus('pronto')">✅ Pronto (3)</button>
+        <button class="btn btn-sm" style="background:rgba(236,72,153,0.1);color:#9d174d;border:1.5px solid rgba(236,72,153,0.3)" onclick="filterStatus('em-entrega')">🛵 Em Entrega (6)</button>
+        <button class="btn btn-sm" style="background:#d1fae5;color:#065f46;border:1.5px solid #a7f3d0" onclick="filterStatus('entregue')">📦 Entregue (20)</button>
+        <button class="btn btn-sm" style="background:#fee2e2;color:#991b1b;border:1.5px solid #fca5a5" onclick="filterStatus('cancelado')">❌ Cancelado (2)</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Buscar pedido, cliente..." oninput="filterTable(this.value)">
+          </div>
+          <input type="date" class="form-control" style="width:auto" value="2026-05-17">
+          <select class="form-control" style="width:auto">
+            <option>Todos os clientes</option>
+          </select>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-secondary">📥 Exportar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="table" id="tablePedidos">
+            <thead>
+              <tr>
+                <th>#Pedido</th>
+                <th>Cliente</th>
+                <th>Itens</th>
+                <th>Subtotal</th>
+                <th>Entrega</th>
+                <th>Total</th>
+                <th>Pagamento</th>
+                <th>Status</th>
+                <th>Horário</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>#0047</strong></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-orange">JC</div>
+                    <span class="text-sm">João Carlos</span>
+                  </div>
+                </td>
+                <td class="text-sm">3 itens</td>
+                <td>R$ 82,50</td>
+                <td>R$ 5,00</td>
+                <td><strong>R$ 87,50</strong></td>
+                <td><span class="badge badge-success">PIX ✓</span></td>
+                <td><span class="badge status-preparando">🍳 Preparando</span></td>
+                <td class="text-muted text-xs">14:32</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-pedido')">👁️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">❌</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>#0046</strong></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-blue">MS</div>
+                    <span class="text-sm">Maria Silva</span>
+                  </div>
+                </td>
+                <td class="text-sm">5 itens</td>
+                <td>R$ 117,00</td>
+                <td>R$ 7,00</td>
+                <td><strong>R$ 124,00</strong></td>
+                <td><span class="badge badge-success">Crédito ✓</span></td>
+                <td><span class="badge status-em-entrega">🛵 Em Entrega</span></td>
+                <td class="text-muted text-xs">14:15</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-pedido')">👁️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">❌</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>#0045</strong></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-green">PO</div>
+                    <span class="text-sm">Pedro Oliveira</span>
+                  </div>
+                </td>
+                <td class="text-sm">2 itens</td>
+                <td>R$ 47,00</td>
+                <td>R$ 5,00</td>
+                <td><strong>R$ 52,00</strong></td>
+                <td><span class="badge badge-warning">Débito ⏳</span></td>
+                <td><span class="badge status-aguardando">⏳ Aguardando</span></td>
+                <td class="text-muted text-xs">14:08</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-pedido')">👁️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">❌</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>#0044</strong></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-purple">AL</div>
+                    <span class="text-sm">Ana Lima</span>
+                  </div>
+                </td>
+                <td class="text-sm">4 itens</td>
+                <td>R$ 91,90</td>
+                <td>R$ 7,00</td>
+                <td><strong>R$ 98,90</strong></td>
+                <td><span class="badge badge-success">PIX ✓</span></td>
+                <td><span class="badge status-entregue">📦 Entregue</span></td>
+                <td class="text-muted text-xs">13:45</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-pedido')">👁️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--text-muted)" disabled>❌</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>#0043</strong></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-pink">RC</div>
+                    <span class="text-sm">Roberto Costa</span>
+                  </div>
+                </td>
+                <td class="text-sm">1 item</td>
+                <td>R$ 29,90</td>
+                <td>R$ 0,00</td>
+                <td><strong>R$ 29,90</strong></td>
+                <td><span class="badge badge-danger">Cancelado</span></td>
+                <td><span class="badge status-cancelado">❌ Cancelado</span></td>
+                <td class="text-muted text-xs">13:20</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-pedido')">👁️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--text-muted)" disabled>❌</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="pagination-info">Mostrando 5 de 47 pedidos</span>
+          <div class="pagination-btns">
+            <button class="page-btn" disabled>‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL Detalhe do Pedido -->
+<div class="modal-overlay" id="modal-pedido">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title"><span>📋</span> Pedido #0047</span>
+      <button class="modal-close" onclick="closeModal('modal-pedido')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <!-- Coluna Esquerda: Itens -->
+        <div>
+          <p class="font-semibold mb-3">🍕 Itens do Pedido</p>
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2 p-2" style="border:1px solid var(--border);border-radius:var(--radius-sm)">
+              <div class="prod-img-placeholder" style="width:38px;height:38px;font-size:1.1rem">🍕</div>
+              <div class="flex-1">
+                <div class="text-sm font-semibold">Pizza Calabresa G</div>
+                <div class="text-xs text-muted">1x R$ 44,90</div>
+              </div>
+              <span class="font-semibold text-sm">R$ 44,90</span>
+            </div>
+            <div class="flex items-center gap-2 p-2" style="border:1px solid var(--border);border-radius:var(--radius-sm)">
+              <div class="prod-img-placeholder" style="width:38px;height:38px;font-size:1.1rem">🥤</div>
+              <div class="flex-1">
+                <div class="text-sm font-semibold">Coca-Cola 2L</div>
+                <div class="text-xs text-muted">2x R$ 12,00</div>
+              </div>
+              <span class="font-semibold text-sm">R$ 24,00</span>
+            </div>
+            <div class="flex items-center gap-2 p-2" style="border:1px solid var(--border);border-radius:var(--radius-sm)">
+              <div class="prod-img-placeholder" style="width:38px;height:38px;font-size:1.1rem">🍰</div>
+              <div class="flex-1">
+                <div class="text-sm font-semibold">Petit Gâteau</div>
+                <div class="text-xs text-muted">1x R$ 22,00</div>
+              </div>
+              <span class="font-semibold text-sm">R$ 22,00</span>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="flex justify-between text-sm"><span>Subtotal:</span><span>R$ 90,90</span></div>
+          <div class="flex justify-between text-sm"><span>Taxa de entrega:</span><span>R$ 5,00</span></div>
+          <div class="flex justify-between font-bold mt-2" style="font-size:1rem">
+            <span>Total:</span><span class="text-primary">R$ 95,90</span>
+          </div>
+        </div>
+
+        <!-- Coluna Direita: Dados -->
+        <div class="flex flex-col gap-3">
+          <div>
+            <p class="text-xs text-muted font-semibold mb-1">CLIENTE</p>
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-orange">JC</div>
+              <div>
+                <div class="font-semibold text-sm">João Carlos Souza</div>
+                <div class="text-xs text-muted">📞 (28) 99999-1234</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs text-muted font-semibold mb-1">ENDEREÇO DE ENTREGA</p>
+            <div class="text-sm">
+              📍 Rua das Flores, 123 – Centro<br>
+              <span class="text-muted">Cachoeiro de Itapemirim – ES</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs text-muted font-semibold mb-1">PAGAMENTO</p>
+            <span class="badge badge-success">✓ PIX Aprovado</span>
+          </div>
+          <div>
+            <p class="text-xs text-muted font-semibold mb-1">STATUS ATUAL</p>
+            <span class="badge status-preparando">🍳 Preparando</span>
+          </div>
+          <div>
+            <p class="text-xs text-muted font-semibold mb-1">ENTREGADOR</p>
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-sm avatar-orange">CF</div>
+              <span class="text-sm">Carlos Ferreira</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs text-muted font-semibold mb-1">HORÁRIO</p>
+            <p class="text-sm">📅 17/05/2026 às 14:32</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted font-semibold mb-2">ATUALIZAR STATUS</p>
+            <div class="flex flex-col gap-2">
+              <select class="form-control">
+                <option>🍳 Preparando</option>
+                <option>✅ Pronto para entrega</option>
+                <option>🛵 Saiu para entrega</option>
+                <option>📦 Entregue</option>
+                <option>❌ Cancelado</option>
+              </select>
+              <button class="btn btn-primary btn-sm">Atualizar Status</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-pedido')">Fechar</button>
+      <button class="btn btn-danger btn-sm" onclick="closeModal('modal-pedido')">❌ Cancelar Pedido</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('mobile-overlay');
+    sidebar.classList.toggle('mobile-open');
+    if (overlay) overlay.classList.toggle('mobile-overlay-show');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('mobile-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        overlay.classList.remove('mobile-overlay-show');
+      });
+    }
+  });
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  function filterTable(val) {
+    document.querySelectorAll('#tablePedidos tbody tr').forEach(row => {
+      row.style.display = !val || row.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
+    });
+  }
+  function filterStatus(status) {
+    // Demo: just shows all for now
+  }
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+</script>
+<div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+</body>
+</html>

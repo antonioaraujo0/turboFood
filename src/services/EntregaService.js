@@ -8,8 +8,8 @@
  *  RN02 – Controle de Jornada: máximo 8h de trabalho seguidas nas últimas 24h
  */
 
-import { Op } from "sequelize";
-import db from "../models/index.js"; // Ajuste o caminho conforme sua estrutura
+const { Op } = require("sequelize");
+const db = require("../models");
 
 const { Entrega, Pedido, Entregador, sequelize } = db;
 
@@ -380,11 +380,12 @@ class EntregaService {
         );
       }
 
-      // Atualizar status e data de conclusão
+      // Atualizar status, data de conclusão e motivo da falha
       await entrega.update(
         {
           status: "FALHOU",
           dataConclusao: new Date(),
+          motivoFalha: motivoFalha || null,
         },
         { transaction },
       );
@@ -523,4 +524,4 @@ class EntregaService {
   }
 }
 
-export default EntregaService;
+module.exports = EntregaService;

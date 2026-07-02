@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finalizar Pedido – TurboFood</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="customer-body">
+
+  <!-- NAVBAR -->
+  <nav class="customer-nav">
+    <div class="customer-nav-inner">
+      <a href="cardapio.html" class="nav-logo">
+        <div class="nav-logo-icon">⚡</div>
+        <span class="nav-logo-name">Turbo<span>Food</span></span>
+      </a>
+      <div></div>
+      <div class="nav-actions">
+        <a href="cardapio.html" class="btn btn-secondary btn-sm">← Voltar ao cardápio</a>
+        <a href="meus-pedidos.html" class="icon-btn" style="text-decoration:none">📋</a>
+        <a href="#" class="icon-btn" style="text-decoration:none">👤</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="menu-content" style="max-width:960px">
+    <h1 class="text-2xl font-bold mb-6">🛒 Finalizar Pedido</h1>
+
+    <!-- Progress Steps -->
+    <div class="flex items-center gap-0 mb-6" style="overflow-x:auto">
+      <div class="flex items-center gap-2">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;flex-shrink:0">1</div>
+        <span class="text-sm font-semibold text-primary">Itens</span>
+      </div>
+      <div style="flex:1;height:2px;background:var(--primary);min-width:32px;margin:0 8px"></div>
+      <div class="flex items-center gap-2">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;flex-shrink:0">2</div>
+        <span class="text-sm font-semibold text-primary">Endereço</span>
+      </div>
+      <div style="flex:1;height:2px;background:var(--primary);min-width:32px;margin:0 8px"></div>
+      <div class="flex items-center gap-2">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;flex-shrink:0">3</div>
+        <span class="text-sm font-semibold text-primary">Pagamento</span>
+      </div>
+      <div style="flex:1;height:2px;background:var(--gray-300);min-width:32px;margin:0 8px"></div>
+      <div class="flex items-center gap-2">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--gray-300);color:var(--text-secondary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;flex-shrink:0">4</div>
+        <span class="text-sm font-semibold text-muted">Confirmado</span>
+      </div>
+    </div>
+
+    <div class="grid-2 gap-6">
+
+      <!-- COLUNA ESQUERDA: Itens + Endereço + Pagamento -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+
+        <!-- Itens do Pedido -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🍕 Itens do Pedido</span>
+            <a href="cardapio.html" class="btn btn-sm btn-ghost text-primary">+ Adicionar item</a>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+              <div class="cart-item-img" style="width:52px;height:52px;font-size:1.6rem">🍕</div>
+              <div class="flex-1">
+                <div class="font-semibold text-sm">Pizza Calabresa G</div>
+                <div class="text-xs text-muted">1x R$ 44,90</div>
+              </div>
+              <div class="qty-control">
+                <button class="qty-btn">−</button>
+                <span class="qty-value">1</span>
+                <button class="qty-btn">+</button>
+              </div>
+              <div class="font-bold text-sm" style="min-width:64px;text-align:right">R$ 44,90</div>
+              <button style="color:var(--text-muted);background:none;border:none;cursor:pointer;font-size:1rem">✕</button>
+            </div>
+            <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+              <div class="cart-item-img" style="width:52px;height:52px;font-size:1.6rem">🥤</div>
+              <div class="flex-1">
+                <div class="font-semibold text-sm">Coca-Cola 2L</div>
+                <div class="text-xs text-muted">2x R$ 12,00</div>
+              </div>
+              <div class="qty-control">
+                <button class="qty-btn">−</button>
+                <span class="qty-value">2</span>
+                <button class="qty-btn">+</button>
+              </div>
+              <div class="font-bold text-sm" style="min-width:64px;text-align:right">R$ 24,00</div>
+              <button style="color:var(--text-muted);background:none;border:none;cursor:pointer;font-size:1rem">✕</button>
+            </div>
+            <div style="padding:14px 20px;display:flex;align-items:center;gap:12px">
+              <div class="cart-item-img" style="width:52px;height:52px;font-size:1.6rem">🍰</div>
+              <div class="flex-1">
+                <div class="font-semibold text-sm">Petit Gâteau</div>
+                <div class="text-xs text-muted">1x R$ 22,00</div>
+              </div>
+              <div class="qty-control">
+                <button class="qty-btn">−</button>
+                <span class="qty-value">1</span>
+                <button class="qty-btn">+</button>
+              </div>
+              <div class="font-bold text-sm" style="min-width:64px;text-align:right">R$ 22,00</div>
+              <button style="color:var(--text-muted);background:none;border:none;cursor:pointer;font-size:1rem">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Endereço -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📍 Endereço de Entrega</span>
+            <button class="btn btn-sm btn-ghost text-primary" onclick="openModal('modal-endereco')">+ Novo</button>
+          </div>
+          <div class="card-body flex flex-col gap-3">
+            <label style="display:flex;gap:12px;padding:12px;border:2px solid var(--primary);border-radius:var(--radius-sm);cursor:pointer;background:var(--primary-bg)">
+              <input type="radio" name="address" checked style="margin-top:3px;accent-color:var(--primary)">
+              <div>
+                <div class="font-semibold text-sm">Casa</div>
+                <div class="text-sm">Rua das Flores, 123 – Centro</div>
+                <div class="text-xs text-muted">Cachoeiro de Itapemirim – ES</div>
+                <div class="text-xs text-success font-semibold mt-1">Taxa de entrega: R$ 5,00</div>
+              </div>
+            </label>
+            <label style="display:flex;gap:12px;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer">
+              <input type="radio" name="address" style="margin-top:3px;accent-color:var(--primary)">
+              <div>
+                <div class="font-semibold text-sm">Trabalho</div>
+                <div class="text-sm">Av. Presidente Vargas, 456 – Bairro Novo</div>
+                <div class="text-xs text-muted">Cachoeiro de Itapemirim – ES</div>
+                <div class="text-xs text-success font-semibold mt-1">Taxa de entrega: R$ 7,00</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pagamento -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">💳 Forma de Pagamento</span>
+          </div>
+          <div class="card-body flex flex-col gap-3">
+            <label style="display:flex;gap:12px;padding:12px;border:2px solid var(--primary);border-radius:var(--radius-sm);cursor:pointer;background:var(--primary-bg);align-items:center">
+              <input type="radio" name="payment" checked style="accent-color:var(--primary)">
+              <div style="width:32px;height:32px;background:rgba(16,185,129,0.15);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem">⚡</div>
+              <div>
+                <div class="font-semibold text-sm">PIX</div>
+                <div class="text-xs text-muted">Pagamento instantâneo – aprovação imediata</div>
+              </div>
+              <span class="badge badge-success" style="margin-left:auto">Aprovação rápida</span>
+            </label>
+            <label style="display:flex;gap:12px;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;align-items:center">
+              <input type="radio" name="payment" style="accent-color:var(--primary)">
+              <div style="width:32px;height:32px;background:rgba(59,130,246,0.15);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem">💳</div>
+              <div>
+                <div class="font-semibold text-sm">Cartão de Crédito</div>
+                <div class="text-xs text-muted">Precisa de confirmação manual</div>
+              </div>
+            </label>
+            <label style="display:flex;gap:12px;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;align-items:center">
+              <input type="radio" name="payment" style="accent-color:var(--primary)">
+              <div style="width:32px;height:32px;background:rgba(139,92,246,0.15);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem">💳</div>
+              <div>
+                <div class="font-semibold text-sm">Cartão de Débito</div>
+                <div class="text-xs text-muted">Precisa de confirmação manual</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Observações -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">💬 Observações</span>
+          </div>
+          <div class="card-body">
+            <textarea class="form-control" rows="3" placeholder="Sem cebola, ponto da carne, instruções especiais..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUNA DIREITA: Resumo -->
+      <div>
+        <div class="card" style="position:sticky;top:calc(var(--header-height) + 20px)">
+          <div class="card-header">
+            <span class="card-title">🧾 Resumo do Pedido</span>
+          </div>
+          <div class="card-body">
+            <div class="flex flex-col gap-2 mb-4">
+              <div class="flex justify-between text-sm"><span>Pizza Calabresa G × 1</span><span>R$ 44,90</span></div>
+              <div class="flex justify-between text-sm"><span>Coca-Cola 2L × 2</span><span>R$ 24,00</span></div>
+              <div class="flex justify-between text-sm"><span>Petit Gâteau × 1</span><span>R$ 22,00</span></div>
+            </div>
+            <hr class="divider">
+            <div class="flex justify-between text-sm mb-2"><span>Subtotal</span><span>R$ 90,90</span></div>
+            <div class="flex justify-between text-sm mb-2"><span>Taxa de entrega</span><span>R$ 5,00</span></div>
+            <div class="flex justify-between text-sm mb-4 text-success"><span>Desconto</span><span>— R$ 0,00</span></div>
+            <div style="background:var(--gray-50);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px">
+              <div class="flex justify-between">
+                <span class="font-bold text-lg">Total</span>
+                <span class="font-extrabold text-xl text-primary">R$ 95,90</span>
+              </div>
+              <p class="text-xs text-muted mt-1">Valor calculado pelo servidor (seguro)</p>
+            </div>
+
+            <!-- Endereço selecionado -->
+            <div style="background:var(--primary-bg);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px;border:1px solid rgba(255,107,53,0.2)">
+              <p class="text-xs font-semibold mb-1">📍 Entrega em:</p>
+              <p class="text-sm">Rua das Flores, 123 – Centro</p>
+              <p class="text-xs text-muted">Cachoeiro de Itapemirim – ES</p>
+            </div>
+
+            <div class="alert alert-info" style="padding:10px 12px;font-size:0.8125rem;margin-bottom:16px">
+              ⏱️ Estimativa: <strong>35–50 minutos</strong>
+            </div>
+
+            <button class="btn btn-primary btn-xl w-full" style="justify-content:center" onclick="openModal('modal-confirma')">
+              🚀 Confirmar Pedido
+            </button>
+            <a href="cardapio.html" class="btn btn-ghost w-full mt-2" style="justify-content:center">
+              ← Voltar ao cardápio
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL Confirmação -->
+  <div class="modal-overlay" id="modal-confirma">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <span class="modal-title"><span>✅</span> Confirmar Pedido</span>
+        <button class="modal-close" onclick="closeModal('modal-confirma')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-4">
+          <div style="font-size:3rem;margin-bottom:12px">🚀</div>
+          <h3 class="font-bold text-lg mb-2">Tudo pronto!</h3>
+          <p class="text-sm text-muted">Revise os dados antes de confirmar:</p>
+        </div>
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between text-sm border p-2 rounded"><span class="text-muted">Total:</span><strong class="text-primary">R$ 95,90</strong></div>
+          <div class="flex justify-between text-sm border p-2 rounded"><span class="text-muted">Endereço:</span><span>Rua das Flores, 123</span></div>
+          <div class="flex justify-between text-sm border p-2 rounded"><span class="text-muted">Pagamento:</span><span>⚡ PIX</span></div>
+          <div class="flex justify-between text-sm border p-2 rounded"><span class="text-muted">Estimativa:</span><span>35–50 min</span></div>
+        </div>
+        <div class="alert alert-warning mt-4" style="font-size:0.8rem">
+          ⚠️ Pedidos já enviados não podem ser cancelados após confirmação pela cozinha.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-confirma')">Revisar</button>
+        <button class="btn btn-primary" onclick="window.location.href='meus-pedidos.html'">✓ Confirmar Pedido!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL Novo Endereço -->
+  <div class="modal-overlay" id="modal-endereco">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title"><span>📍</span> Novo Endereço</span>
+        <button class="modal-close" onclick="closeModal('modal-endereco')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Apelido</label>
+            <input type="text" class="form-control" placeholder="Casa, Trabalho...">
+          </div>
+          <div class="form-group">
+            <label class="form-label req">CEP</label>
+            <input type="text" class="form-control" placeholder="00000-000">
+          </div>
+          <div class="form-group">
+            <label class="form-label req">Número</label>
+            <input type="text" class="form-control" placeholder="123">
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label req">Rua / Avenida</label>
+            <input type="text" class="form-control" placeholder="Rua das Flores">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Complemento</label>
+            <input type="text" class="form-control" placeholder="Apto 12">
+          </div>
+          <div class="form-group">
+            <label class="form-label req">Bairro</label>
+            <input type="text" class="form-control" placeholder="Centro">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-endereco')">Cancelar</button>
+        <button class="btn btn-primary" onclick="closeModal('modal-endereco')">💾 Salvar</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+</script>
+</body>
+</html>

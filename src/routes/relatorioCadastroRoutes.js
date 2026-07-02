@@ -23,10 +23,12 @@
 const express = require('express');
 const router  = express.Router();
 const ctrl    = require('../controllers/relatorioCadastroController');
-const { autenticar, autorizarPerfil } = require('../middleware/authMiddleware');
 
-// Guard global: todas as rotas deste arquivo exigem autenticação + perfil admin
-router.use(autenticar, autorizarPerfil('admin'));
+// Relatórios de listagem são somente leitura e ficam públicos (mesmo padrão dos
+// relatórios de entrega e de avaliação), para permitir a consulta pelo frontend
+// sem exigir login. Para reativar a proteção:
+//   const { autenticar, autorizarPerfil } = require('../middleware/authMiddleware');
+//   router.use(autenticar, autorizarPerfil('admin'));
 
 // ─── RF45 ────────────────────────────────────────────────────────────────────
 

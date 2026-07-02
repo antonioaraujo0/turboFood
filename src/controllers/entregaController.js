@@ -1,60 +1,103 @@
-const EntregaService = require('../services/EntregaService');
+const EntregaService = require("../services/EntregaService");
 
+// Mapeia mensagens de erro para códigos HTTP adequados.
+function statusFromError(message = "") {
+  if (message.includes("não encontrad")) return 404;
+  return 400;
+}
+
+// GET /entrega  (aceita ?status= e ?entregadorId=)
 const listar = async (req, res) => {
   try {
-    res.json(await EntregaService.listar());
+    const { status, entregadorId } = req.query;
+    const filtros = {};
+    if (status) filtros.status = status;
+    if (entregadorId) filtros.entregadorId = Number(entregadorId);
+    res.json(await EntregaService.listar(filtros));
   } catch (error) {
-    res.status(500).json({ erro: 'Erro ao listar entregas', detalhe: error.message });
+    res
+      .status(500)
+      .json({ erro: "Erro ao listar entregas", detalhe: error.message });
   }
 };
 
+// GET /entrega/:id
 const buscarPorId = async (req, res) => {
   try {
     res.json(await EntregaService.buscarPorId(req.params.id));
   } catch (error) {
-    const status = error.message.includes('não encontrado') ? 404 : 500;
-    res.status(status).json({ erro: error.message });
+    res.status(statusFromError(error.message)).json({ erro: error.message });
   }
 };
 
-const atribuirEntregador = async (req, res) => {
+// POST /entrega  { entregadorId, pedidosIds: [] }
+// RN01 (máx 5 pedidos) e RN02 (jornada 8h/24h) validadas no service.
+const criar = async (req, res) => {
   try {
-    const { entregadorId } = req.body;
-    res.json(await EntregaService.atribuirEntregador(req.params.id, entregadorId));
+    res.status(201).json(await EntregaService.criar(req.body));
   } catch (error) {
-    const status = error.message.includes('não encontrado') ? 404 : 400;
-    res.status(status).json({ erro: error.message });
+    res.status(statusFromError(error.message)).json({ erro: error.message });
   }
 };
 
-const confirmarEntrega = async (req, res) => {
+// POST /entrega/:id/pedidos  { pedidoId }
+const adicionarPedido = async (req, res) => {
   try {
-    res.json(await EntregaService.confirmarEntrega(req.params.id));
+    const { pedidoId } = req.body;
+    res.json(await EntregaService.adicionarPedido(req.params.id, pedidoId));
   } catch (error) {
-    const status = error.message.includes('não encontrado') ? 404 : 400;
-    res.status(status).json({ erro: error.message });
+    res.status(statusFromError(error.message)).json({ erro: error.message });
   }
 };
 
-const cancelarEntrega = async (req, res) => {
+// POST /entrega/:id/iniciar  → EM_ROTA
+const iniciar = async (req, res) => {
   try {
-    res.json(await EntregaService.remove(req.params.id));
+    res.json(await EntregaService.iniciarEntrega(req.params.id));
   } catch (error) {
-    const status = error.message.includes('não encontrado') ? 404 : 400;
-    res.status(status).json({ erro: error.message });
+    res.status(statusFromError(error.message)).json({ erro: error.message });
   }
 };
 
-const avaliar = async (req, res) => {
+// POST /entrega/:id/finalizar  → ENTREGUE
+const finalizar = async (req, res) => {
   try {
-    res.status(201).json(await EntregaService.avaliar(req));
+    res.json(await EntregaService.finalizarEntrega(req.params.id));
   } catch (error) {
-    if (error.name === 'SequelizeValidationError') {
-      return res.status(400).json({ erro: error.errors.map((e) => e.message) });
-    }
-    const status = error.message.includes('não encontrado') ? 404 : 400;
-    res.status(status).json({ erro: error.message });
+    res.status(statusFromError(error.message)).json({ erro: error.message });
   }
 };
 
-module.exports = { listar, buscarPorId, atribuirEntregador, confirmarEntrega, cancelarEntrega, avaliar };
+// POST /entrega/:id/falhar  { motivoFalha }
+const falhar = async (req, res) => {
+  try {
+    const { motivoFalha } = req.body;
+    res.json(await EntregaService.falharEntrega(req.params.id, motivoFalha));
+  } catch (error) {
+    res.status(statusFromError(error.message)).json({ erro: error.message });
+  }
+};
+
+// GET /entrega/entregador/:entregadorId/jornada  (RN02 - estatísticas)
+const jornada = async (req, res) => {
+  try {
+    res.json(
+      await EntregaService.obterEstatisticasJornada(
+        Number(req.params.entregadorId)
+      )
+    );
+  } catch (error) {
+    res.status(statusFromError(error.message)).json({ erro: error.message });
+  }
+};
+
+module.exports = {
+  listar,
+  buscarPorId,
+  criar,
+  adicionarPedido,
+  iniciar,
+  finalizar,
+  falhar,
+  jornada,
+};

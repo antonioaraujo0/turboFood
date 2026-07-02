@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avaliações – TurboFood Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div><span class="sidebar-logo-name">TurboFood</span><span class="sidebar-logo-sub">Administrador</span></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Principal</div>
+      <a href="dashboard.html" class="sidebar-link"><span class="icon">🏠</span> Dashboard</a>
+      <a href="pedidos.html" class="sidebar-link"><span class="icon">📋</span> Pedidos <span class="sidebar-badge">5</span></a>
+      <a href="pagamentos.html" class="sidebar-link"><span class="icon">💳</span> Pagamentos</a>
+      <div class="sidebar-section-title">Cadastros</div>
+      <a href="categorias.html" class="sidebar-link"><span class="icon">🏷️</span> Categorias</a>
+      <a href="produtos.html" class="sidebar-link"><span class="icon">🍕</span> Produtos</a>
+      <a href="clientes.html" class="sidebar-link"><span class="icon">👥</span> Clientes</a>
+      <a href="entregadores.html" class="sidebar-link"><span class="icon">🛵</span> Entregadores</a>
+      <a href="veiculos.html" class="sidebar-link"><span class="icon">🚗</span> Veículos</a>
+      <div class="sidebar-section-title">Relatórios</div>
+      <a href="avaliacoes.html" class="sidebar-link active"><span class="icon">⭐</span> Avaliações</a>
+      <a href="relatorios.html" class="sidebar-link"><span class="icon">📊</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">RH</div>
+        <div><div class="sidebar-user-name">Roni Herculano</div><div class="sidebar-user-role">Gerente</div></div>
+        <a href="../index.html" class="sidebar-logout-btn">🚪</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+      <button class="sidebar-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div class="top-bar-title">
+        <h1>⭐ Avaliações</h1>
+        <p>Feedback dos clientes sobre pedidos e entregas</p>
+      </div>
+      <div class="top-bar-right">
+        <button class="icon-btn">🔔<span class="dot">3</span></button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Resumo -->
+      <div class="stats-grid mb-4" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-card">
+          <div class="stat-icon yellow">⭐</div>
+          <div>
+            <div class="stat-value">4.8</div>
+            <div class="stat-label">Média Geral (comida)</div>
+            <div class="stat-change up">▲ +0.2 esta semana</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">🛵</div>
+          <div>
+            <div class="stat-value">4.6</div>
+            <div class="stat-label">Média de Entregas</div>
+            <div class="stat-change up">▲ Estável</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">📊</div>
+          <div>
+            <div class="stat-value">238</div>
+            <div class="stat-label">Total de Avaliações</div>
+            <div class="stat-change up">▲ 12 esta semana</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">💬</div>
+          <div>
+            <div class="stat-value">89</div>
+            <div class="stat-label">Com comentários</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Buscar avaliação..." oninput="filterTable(this.value)">
+          </div>
+          <select class="form-control" style="width:auto">
+            <option>Todas as notas</option>
+            <option>⭐⭐⭐⭐⭐ 5 estrelas</option>
+            <option>⭐⭐⭐⭐ 4 estrelas</option>
+            <option>⭐⭐⭐ 3 estrelas</option>
+            <option>⭐⭐ 2 estrelas</option>
+            <option>⭐ 1 estrela</option>
+          </select>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-secondary">📥 Exportar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="table" id="tableAvaliacoes">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Pedido</th>
+                <th>Nota Comida</th>
+                <th>Nota Entrega</th>
+                <th>Comentário</th>
+                <th>Entregador</th>
+                <th>Data</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-orange">JC</div>
+                    <span class="text-sm">João Carlos</span>
+                  </div>
+                </td>
+                <td><a href="pedidos.html" class="text-primary font-semibold">#0044</a></td>
+                <td>
+                  <div class="stars">
+                    <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
+                  </div>
+                  <span class="text-xs text-muted">5/5</span>
+                </td>
+                <td>
+                  <div class="stars">
+                    <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
+                  </div>
+                  <span class="text-xs text-muted">5/5</span>
+                </td>
+                <td class="text-sm">"Perfeito! Pizza chegou quentinha e o entregador foi super atencioso."</td>
+                <td>
+                  <div class="flex items-center gap-1">
+                    <div class="avatar avatar-sm avatar-orange">CF</div>
+                    <span class="text-xs">Carlos F.</span>
+                  </div>
+                </td>
+                <td class="text-xs text-muted">17/05/2026</td>
+                <td>
+                  <button class="btn btn-sm btn-ghost" onclick="openModal('modal-avaliacao')">👁️</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-blue">MS</div>
+                    <span class="text-sm">Maria Silva</span>
+                  </div>
+                </td>
+                <td><a href="pedidos.html" class="text-primary font-semibold">#0039</a></td>
+                <td>
+                  <div class="stars">
+                    <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star empty">☆</span>
+                  </div>
+                  <span class="text-xs text-muted">4/5</span>
+                </td>
+                <td>
+                  <div class="stars">
+                    <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
+                  </div>
+                  <span class="text-xs text-muted">5/5</span>
+                </td>
+                <td class="text-sm">"Hambúrguer bom, mas poderia vir mais quente."</td>
+                <td>
+                  <div class="flex items-center gap-1">
+                    <div class="avatar avatar-sm avatar-blue">LM</div>
+                    <span class="text-xs">Lucas M.</span>
+                  </div>
+                </td>
+                <td class="text-xs text-muted">16/05/2026</td>
+                <td>
+                  <button class="btn btn-sm btn-ghost" onclick="openModal('modal-avaliacao')">👁️</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-green">PO</div>
+                    <span class="text-sm">Pedro Oliveira</span>
+                  </div>
+                </td>
+                <td><a href="pedidos.html" class="text-primary font-semibold">#0035</a></td>
+                <td>
+                  <div class="stars">
+                    <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
+                  </div>
+                  <span class="text-xs text-muted">5/5</span>
+                </td>
+                <td>
+                  <div class="stars">
+                    <span class="star">⭐</span><span class="star">⭐</span><span class="star empty">☆</span><span class="star empty">☆</span><span class="star empty">☆</span>
+                  </div>
+                  <span class="text-xs text-muted">2/5</span>
+                </td>
+                <td class="text-sm">"Comida ótima, mas o entregador atrasou muito."</td>
+                <td>
+                  <div class="flex items-center gap-1">
+                    <div class="avatar avatar-sm" style="background:rgba(239,68,68,0.15);color:var(--danger)">FS</div>
+                    <span class="text-xs">Fernando S.</span>
+                    <span class="badge badge-danger" style="font-size:0.6rem">⚠</span>
+                  </div>
+                </td>
+                <td class="text-xs text-muted">15/05/2026</td>
+                <td>
+                  <button class="btn btn-sm btn-ghost" onclick="openModal('modal-avaliacao')">👁️</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-sm avatar-purple">AL</div>
+                    <span class="text-sm">Ana Lima</span>
+                  </div>
+                </td>
+                <td><a href="pedidos.html" class="text-primary font-semibold">#0031</a></td>
+                <td>
+                  <div class="stars">
+                    <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
+                  </div>
+                  <span class="text-xs text-muted">5/5</span>
+                </td>
+                <td>
+                  <div class="stars">
+                    <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
+                  </div>
+                  <span class="text-xs text-muted">5/5</span>
+                </td>
+                <td class="text-sm text-muted">—</td>
+                <td>
+                  <div class="flex items-center gap-1">
+                    <div class="avatar avatar-sm avatar-green">MR</div>
+                    <span class="text-xs">Marcos R.</span>
+                  </div>
+                </td>
+                <td class="text-xs text-muted">14/05/2026</td>
+                <td>
+                  <button class="btn btn-sm btn-ghost" onclick="openModal('modal-avaliacao')">👁️</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="pagination-info">Mostrando 4 de 238 avaliações</span>
+          <div class="pagination-btns">
+            <button class="page-btn" disabled>‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL Detalhe Avaliação -->
+<div class="modal-overlay" id="modal-avaliacao">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><span>⭐</span> Avaliação do Pedido #0044</span>
+      <button class="modal-close" onclick="closeModal('modal-avaliacao')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="avatar avatar-lg avatar-orange">JC</div>
+        <div>
+          <div class="font-bold">João Carlos Souza</div>
+          <div class="text-sm text-muted">Avaliado em 17/05/2026</div>
+          <div class="alert alert-info" style="padding:6px 10px;margin-top:6px;font-size:0.78rem">
+            ℹ️ Avaliações submetidas não podem ser alteradas pelo restaurante (RNF01).
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 gap-4 mb-4">
+        <div class="card" style="border:2px solid var(--warning-light)">
+          <div class="card-body" style="padding:16px;text-align:center">
+            <p class="text-xs text-muted font-semibold mb-2">NOTA DA COMIDA</p>
+            <div class="stars" style="justify-content:center;font-size:1.6rem">
+              <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
+            </div>
+            <div class="text-2xl font-extrabold text-warning mt-2">5/5</div>
+          </div>
+        </div>
+        <div class="card" style="border:2px solid #dbeafe">
+          <div class="card-body" style="padding:16px;text-align:center">
+            <p class="text-xs text-muted font-semibold mb-2">NOTA DA ENTREGA</p>
+            <div class="stars" style="justify-content:center;font-size:1.6rem">
+              <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
+            </div>
+            <div class="text-2xl font-extrabold text-info mt-2">5/5</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Comentário do cliente</label>
+        <div style="padding:12px;background:var(--gray-50);border-radius:var(--radius-sm);border:1px solid var(--border);font-size:0.9rem;color:var(--text);line-height:1.6">
+          "Perfeito! Pizza chegou quentinha e o entregador foi super atencioso. Com certeza vou pedir mais vezes!"
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-avaliacao')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('mobile-overlay');
+    sidebar.classList.toggle('mobile-open');
+    if (overlay) overlay.classList.toggle('mobile-overlay-show');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('mobile-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        overlay.classList.remove('mobile-overlay-show');
+      });
+    }
+  });
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  function filterTable(val) {
+    document.querySelectorAll('#tableAvaliacoes tbody tr').forEach(row => {
+      row.style.display = !val || row.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+</script>
+<div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+</body>
+</html>

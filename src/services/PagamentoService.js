@@ -3,11 +3,13 @@
  * Caso de uso: Finalizar Pagamento [RF33]
  *
  * Regras de Negócio:
- *  RN01 – Máximo 1 pagamento aprovado por pedido: o sistema impede um segundo pagamento
- *          aprovado para o mesmo pedido (transação: cria Pagamento + atualiza status do Pedido).
- *  RN02 – Pedido deve avançar para "confirmado" automaticamente ao ter pagamento aprovado:
- *          se o pagamento for aprovado e o pedido estiver "aguardando", o status do pedido
- *          é atualizado para "confirmado" atomicamente na mesma transação.
+ *  RN01 – O pagamento só pode ser realizado dentro do tempo limite (JANELA_MINUTOS)
+ *          após a criação do pedido.
+ *  RN02 – Cada pedido pode possuir apenas um pagamento aprovado: o sistema impede
+ *          um segundo pagamento aprovado para o mesmo pedido.
+ *
+ *  (Efeito colateral) Ao aprovar o pagamento de um pedido "aguardando", o pedido
+ *  avança automaticamente para "confirmado" na mesma transação.
  */
 
 const { sequelize, Pagamento, Pedido } = require('../models');
@@ -23,7 +25,7 @@ class PagamentoService {
     });
     if (!pedido) throw new Error('Pedido não encontrado.');
 
-    // RN01 – Já existe pagamento aprovado?
+    // RN02 – Já existe pagamento aprovado?
     if (statusPagamento === 'aprovado') {
       const jaAprovado = pedido.pagamentos.some((p) => p.status === 'aprovado');
       if (jaAprovado) {
@@ -49,7 +51,7 @@ class PagamentoService {
 
     const pedido = await this._verificarRegrasDeNegocio(pedidoId, status);
 
-    // RN02 – Janela de pagamento: máximo 15 minutos após a criação do pedido
+    // RN01 – Janela de pagamento: máximo 15 minutos após a criação do pedido
     const JANELA_MINUTOS = 15;
     const agora = new Date();
     const criadoEm = new Date(pedido.createdAt);
@@ -64,7 +66,7 @@ class PagamentoService {
 
     const t = await sequelize.transaction();
     try {
-      // RN01 – recalcular valor do pedido diretamente do banco de dados
+      // Recalcula o valor do pedido diretamente do banco (fonte da verdade)
       const itensPedido = await pedido.getItens();
       const valorRecalculado = itensPedido.reduce((acc, item) => acc + Number(item.subtotal), 0);
 
@@ -74,7 +76,7 @@ class PagamentoService {
         { transaction: t }
       );
 
-      // RN02 – Se aprovado, avança o pedido para "confirmado"
+      // Se aprovado, avança o pedido para "confirmado"
       if (status === 'aprovado' && pedido.status === 'aguardando') {
         await pedido.update({ status: 'confirmado' }, { transaction: t });
       }
@@ -133,7 +135,7 @@ class PagamentoService {
     });
     if (!pagamento) throw new Error('Pagamento não encontrado.');
 
-    // RN01 – Se tentar aprovar, verificar se já há outro aprovado
+    // RN02 – Se tentar aprovar, verificar se já há outro aprovado
     if (status === 'aprovado') {
       const outroAprovado = pagamento.pedido.pagamentos.some(
         (p) => p.id !== pagamento.id && p.status === 'aprovado'
@@ -147,7 +149,7 @@ class PagamentoService {
     try {
       await pagamento.update({ status }, { transaction: t });
 
-      // RN02 – Se aprovado e pedido ainda aguardando, confirmar pedido
+      // Se aprovado e pedido ainda aguardando, confirmar pedido
       if (status === 'aprovado' && pagamento.pedido.status === 'aguardando') {
         await pagamento.pedido.update({ status: 'confirmado' }, { transaction: t });
       }

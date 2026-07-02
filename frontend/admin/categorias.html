@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categorias – TurboFood Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div>
+        <span class="sidebar-logo-name">TurboFood</span>
+        <span class="sidebar-logo-sub">Administrador</span>
+      </div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Principal</div>
+      <a href="dashboard.html" class="sidebar-link"><span class="icon">🏠</span> Dashboard</a>
+      <a href="pedidos.html" class="sidebar-link"><span class="icon">📋</span> Pedidos <span class="sidebar-badge">5</span></a>
+      <a href="pagamentos.html" class="sidebar-link"><span class="icon">💳</span> Pagamentos</a>
+      <div class="sidebar-section-title">Cadastros</div>
+      <a href="categorias.html" class="sidebar-link active"><span class="icon">🏷️</span> Categorias</a>
+      <a href="produtos.html" class="sidebar-link"><span class="icon">🍕</span> Produtos</a>
+      <a href="clientes.html" class="sidebar-link"><span class="icon">👥</span> Clientes</a>
+      <a href="entregadores.html" class="sidebar-link"><span class="icon">🛵</span> Entregadores</a>
+      <a href="veiculos.html" class="sidebar-link"><span class="icon">🚗</span> Veículos</a>
+      <div class="sidebar-section-title">Relatórios</div>
+      <a href="avaliacoes.html" class="sidebar-link"><span class="icon">⭐</span> Avaliações</a>
+      <a href="relatorios.html" class="sidebar-link"><span class="icon">📊</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">RH</div>
+        <div>
+          <div class="sidebar-user-name">Roni Herculano</div>
+          <div class="sidebar-user-role">Gerente</div>
+        </div>
+        <a href="../index.html" class="sidebar-logout-btn" title="Sair">🚪</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+      <button class="sidebar-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div class="top-bar-title">
+        <h1>🏷️ Categorias</h1>
+        <p>Gerencie as categorias do cardápio</p>
+      </div>
+      <div class="top-bar-right">
+        <button class="btn btn-primary" onclick="openModal('modal-nova-categoria')">
+          + Nova Categoria
+        </button>
+        <button class="icon-btn">🔔<span class="dot">3</span></button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Buscar categoria..." oninput="filterTable(this.value)">
+          </div>
+          <select class="form-control" style="width:auto" onchange="filterTable()">
+            <option>Todos os status</option>
+            <option>Ativo</option>
+            <option>Inativo</option>
+          </select>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-secondary">📥 Exportar</button>
+        </div>
+      </div>
+
+      <!-- Table Card -->
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="table" id="tableCategories">
+            <thead>
+              <tr>
+                <th>Ordem</th>
+                <th>Categoria</th>
+                <th>Descrição</th>
+                <th>Produtos</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="badge badge-gray">1</span>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span style="font-size:1.5rem">🍕</span>
+                    <div>
+                      <div class="font-semibold">Pizzas</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-muted text-sm">Pizzas tradicionais e especiais</td>
+                <td><span class="badge badge-info">18 produtos</span></td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-nova-categoria')" title="Editar">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)" onclick="confirmDelete('categoria', 'Pizzas')" title="Remover">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-gray">2</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span style="font-size:1.5rem">🍔</span>
+                    <div><div class="font-semibold">Lanches</div></div>
+                  </div>
+                </td>
+                <td class="text-muted text-sm">Hambúrgueres e sanduíches</td>
+                <td><span class="badge badge-info">12 produtos</span></td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-nova-categoria')" title="Editar">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)" onclick="confirmDelete('categoria', 'Lanches')" title="Remover">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-gray">3</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span style="font-size:1.5rem">🥤</span>
+                    <div><div class="font-semibold">Bebidas</div></div>
+                  </div>
+                </td>
+                <td class="text-muted text-sm">Refrigerantes, sucos e águas</td>
+                <td><span class="badge badge-info">8 produtos</span></td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-nova-categoria')" title="Editar">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)" onclick="confirmDelete('categoria', 'Bebidas')" title="Remover">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-gray">4</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span style="font-size:1.5rem">🍰</span>
+                    <div><div class="font-semibold">Sobremesas</div></div>
+                  </div>
+                </td>
+                <td class="text-muted text-sm">Doces, bolos e sorvetes</td>
+                <td><span class="badge badge-info">6 produtos</span></td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-nova-categoria')" title="Editar">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)" onclick="confirmDelete('categoria', 'Sobremesas')" title="Remover">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-gray">5</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span style="font-size:1.5rem">🎁</span>
+                    <div><div class="font-semibold">Combos</div></div>
+                  </div>
+                </td>
+                <td class="text-muted text-sm">Combos e promoções especiais</td>
+                <td><span class="badge badge-info">4 produtos</span></td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-nova-categoria')" title="Editar">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)" onclick="confirmDelete('categoria', 'Combos')" title="Remover">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-gray">6</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span style="font-size:1.5rem">🥗</span>
+                    <div><div class="font-semibold">Entradas</div></div>
+                  </div>
+                </td>
+                <td class="text-muted text-sm">Porções e entradas</td>
+                <td><span class="badge badge-gray">0 produtos</span></td>
+                <td><span class="badge badge-warning">⏸ Inativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-nova-categoria')" title="Editar">✏️</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)" onclick="confirmDelete('categoria', 'Entradas')" title="Remover">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          <span class="pagination-info">Mostrando 6 de 6 categorias</span>
+          <div class="pagination-btns">
+            <button class="page-btn" disabled>‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn" disabled>›</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODAL Nova/Editar Categoria -->
+<div class="modal-overlay" id="modal-nova-categoria">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span class="modal-title"><span>🏷️</span> Nova Categoria</span>
+      <button class="modal-close" onclick="closeModal('modal-nova-categoria')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row cols-1 gap-3" style="display:flex; flex-direction:column; gap:14px">
+        <div class="form-group">
+          <label class="form-label req">Nome da Categoria</label>
+          <input type="text" class="form-control" placeholder="Ex: Pizzas" maxlength="30">
+          <span class="form-hint">Máximo 30 caracteres</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descrição</label>
+          <textarea class="form-control" rows="2" placeholder="Descreva brevemente esta categoria..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ícone / Emoji</label>
+          <input type="text" class="form-control" placeholder="Ex: 🍕" style="font-size:1.4rem">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ordem de Exibição</label>
+          <input type="number" class="form-control" placeholder="1" min="1">
+          <span class="form-hint">Categorias com número menor aparecem primeiro</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-control">
+            <option value="ativo">✓ Ativo</option>
+            <option value="inativo">⏸ Inativo</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-nova-categoria')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-nova-categoria')">💾 Salvar Categoria</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL Confirmar Delete -->
+<div class="modal-overlay" id="modal-delete">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span class="modal-title"><span>⚠️</span> Confirmar Exclusão</span>
+      <button class="modal-close" onclick="closeModal('modal-delete')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-danger">
+        <strong>Atenção!</strong> Esta ação não pode ser desfeita.
+      </div>
+      <p class="text-sm">Tem certeza que deseja remover a categoria <strong id="delete-name"></strong>?</p>
+      <p class="text-sm text-muted mt-2">Categorias com produtos vinculados não podem ser removidas.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-delete')">Cancelar</button>
+      <button class="btn btn-danger" onclick="closeModal('modal-delete')">🗑️ Confirmar Exclusão</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('mobile-overlay');
+    sidebar.classList.toggle('mobile-open');
+    if (overlay) overlay.classList.toggle('mobile-overlay-show');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('mobile-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        overlay.classList.remove('mobile-overlay-show');
+      });
+    }
+  });
+  function openModal(id) {
+    document.getElementById(id).classList.add('show');
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('show');
+  }
+  function confirmDelete(type, name) {
+    document.getElementById('delete-name').textContent = name;
+    openModal('modal-delete');
+  }
+  function filterTable(val) {
+    const rows = document.querySelectorAll('#tableCategories tbody tr');
+    rows.forEach(row => {
+      row.style.display = !val || row.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('show');
+    });
+  });
+</script>
+<div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+</body>
+</html>

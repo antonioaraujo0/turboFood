@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes – TurboFood Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">⚡</div>
+      <div><span class="sidebar-logo-name">TurboFood</span><span class="sidebar-logo-sub">Administrador</span></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Principal</div>
+      <a href="dashboard.html" class="sidebar-link"><span class="icon">🏠</span> Dashboard</a>
+      <a href="pedidos.html" class="sidebar-link"><span class="icon">📋</span> Pedidos <span class="sidebar-badge">5</span></a>
+      <a href="pagamentos.html" class="sidebar-link"><span class="icon">💳</span> Pagamentos</a>
+      <div class="sidebar-section-title">Cadastros</div>
+      <a href="categorias.html" class="sidebar-link"><span class="icon">🏷️</span> Categorias</a>
+      <a href="produtos.html" class="sidebar-link"><span class="icon">🍕</span> Produtos</a>
+      <a href="clientes.html" class="sidebar-link active"><span class="icon">👥</span> Clientes</a>
+      <a href="entregadores.html" class="sidebar-link"><span class="icon">🛵</span> Entregadores</a>
+      <a href="veiculos.html" class="sidebar-link"><span class="icon">🚗</span> Veículos</a>
+      <div class="sidebar-section-title">Relatórios</div>
+      <a href="avaliacoes.html" class="sidebar-link"><span class="icon">⭐</span> Avaliações</a>
+      <a href="relatorios.html" class="sidebar-link"><span class="icon">📊</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">RH</div>
+        <div><div class="sidebar-user-name">Roni Herculano</div><div class="sidebar-user-role">Gerente</div></div>
+        <a href="../index.html" class="sidebar-logout-btn">🚪</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+      <button class="sidebar-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div class="top-bar-title">
+        <h1>👥 Clientes</h1>
+        <p>312 clientes cadastrados</p>
+      </div>
+      <div class="top-bar-right">
+        <button class="btn btn-primary" onclick="openModal('modal-cliente')">+ Novo Cliente</button>
+        <button class="icon-btn">🔔<span class="dot">3</span></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Buscar por nome, CPF ou e-mail..." oninput="filterTable(this.value)">
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-secondary">📥 Exportar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="table" id="tableClientes">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>CPF</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Pedidos</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-orange">JC</div>
+                    <div>
+                      <div class="font-semibold">João Carlos Souza</div>
+                      <div class="text-xs text-muted">Cadastrado em 10/01/2024</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-sm">123.456.789-00</td>
+                <td class="text-sm">joao@email.com</td>
+                <td class="text-sm">(28) 99999-1234</td>
+                <td><span class="badge badge-info">28 pedidos</span></td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-cliente')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-enderecos')">📍</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-blue">MS</div>
+                    <div>
+                      <div class="font-semibold">Maria da Silva</div>
+                      <div class="text-xs text-muted">Cadastrado em 15/02/2024</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-sm">987.654.321-00</td>
+                <td class="text-sm">maria.silva@gmail.com</td>
+                <td class="text-sm">(28) 98888-5678</td>
+                <td><span class="badge badge-info">15 pedidos</span></td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-cliente')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-enderecos')">📍</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-green">PO</div>
+                    <div>
+                      <div class="font-semibold">Pedro Oliveira</div>
+                      <div class="text-xs text-muted">Cadastrado em 03/03/2024</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-sm">456.789.123-00</td>
+                <td class="text-sm">pedro.o@hotmail.com</td>
+                <td class="text-sm">(28) 97777-9012</td>
+                <td><span class="badge badge-info">7 pedidos</span></td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-cliente')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-enderecos')">📍</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-purple">AL</div>
+                    <div>
+                      <div class="font-semibold">Ana Lima</div>
+                      <div class="text-xs text-muted">Cadastrado em 20/04/2024</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-sm">321.654.987-00</td>
+                <td class="text-sm">ana.lima@email.com</td>
+                <td class="text-sm">(28) 96666-3456</td>
+                <td><span class="badge badge-info">42 pedidos</span></td>
+                <td><span class="badge badge-success">✓ Ativo</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-cliente')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-enderecos')">📍</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar avatar-pink">RC</div>
+                    <div>
+                      <div class="font-semibold">Roberto Costa</div>
+                      <div class="text-xs text-muted">Cadastrado em 05/05/2024</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-sm">654.321.987-00</td>
+                <td class="text-sm">roberto.c@gmail.com</td>
+                <td class="text-sm">(28) 95555-7890</td>
+                <td><span class="badge badge-gray">1 pedido</span></td>
+                <td><span class="badge badge-warning">⚠ Bloqueado</span></td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-cliente')">✏️</button>
+                    <button class="btn btn-sm btn-ghost" onclick="openModal('modal-enderecos')">📍</button>
+                    <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="pagination-info">Mostrando 5 de 312 clientes</span>
+          <div class="pagination-btns">
+            <button class="page-btn" disabled>‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL Cliente -->
+<div class="modal-overlay" id="modal-cliente">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><span>👤</span> Cadastrar Cliente</span>
+      <button class="modal-close" onclick="closeModal('modal-cliente')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label req">Nome Completo</label>
+          <input type="text" class="form-control" placeholder="Nome completo do cliente">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">CPF</label>
+          <input type="text" class="form-control" placeholder="000.000.000-00">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Data de Nascimento</label>
+          <input type="date" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">E-mail</label>
+          <input type="email" class="form-control" placeholder="email@exemplo.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Telefone</label>
+          <input type="tel" class="form-control" placeholder="(28) 9 9999-9999">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Senha</label>
+          <input type="password" class="form-control" placeholder="Mínimo 8 caracteres">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-control">
+            <option>✓ Ativo</option>
+            <option>⚠ Bloqueado</option>
+            <option>⏸ Inativo</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-cliente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-cliente')">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL Endereços -->
+<div class="modal-overlay" id="modal-enderecos">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title"><span>📍</span> Endereços do Cliente</span>
+      <button class="modal-close" onclick="closeModal('modal-enderecos')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="flex justify-between items-center mb-4">
+        <strong class="text-sm">João Carlos Souza</strong>
+        <button class="btn btn-sm btn-primary" onclick="openModal('modal-novo-endereco'); closeModal('modal-enderecos')">+ Novo Endereço</button>
+      </div>
+      <div class="flex flex-col gap-3">
+        <div class="card" style="border:2px solid var(--primary)">
+          <div class="card-body" style="padding:14px">
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-primary">Principal</span>
+                  <span class="font-semibold text-sm">Casa</span>
+                </div>
+                <p class="text-sm">Rua das Flores, 123 – Bairro Centro</p>
+                <p class="text-sm text-muted">Cachoeiro de Itapemirim – ES, CEP: 29300-000</p>
+                <p class="text-sm text-muted">Ref: Próximo ao supermercado</p>
+                <p class="text-sm font-semibold text-success mt-1">Taxa de entrega: R$ 5,00</p>
+              </div>
+              <div class="flex gap-2">
+                <button class="btn btn-sm btn-ghost">✏️</button>
+                <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body" style="padding:14px">
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-semibold text-sm">Trabalho</span>
+                </div>
+                <p class="text-sm">Av. Presidente Vargas, 456 – Bairro Novo</p>
+                <p class="text-sm text-muted">Cachoeiro de Itapemirim – ES, CEP: 29305-000</p>
+                <p class="text-sm font-semibold text-success mt-1">Taxa de entrega: R$ 7,00</p>
+              </div>
+              <div class="flex gap-2">
+                <button class="btn btn-sm btn-ghost">✏️</button>
+                <button class="btn btn-sm btn-ghost" style="color:var(--danger)">🗑️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-enderecos')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL Novo Endereço -->
+<div class="modal-overlay" id="modal-novo-endereco">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><span>📍</span> Novo Endereço</span>
+      <button class="modal-close" onclick="closeModal('modal-novo-endereco')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label">Apelido do Endereço</label>
+          <input type="text" class="form-control" placeholder="Ex: Casa, Trabalho, Minha mãe...">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">CEP</label>
+          <input type="text" class="form-control" placeholder="00000-000">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Número</label>
+          <input type="text" class="form-control" placeholder="123">
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label req">Logradouro (Rua/Avenida)</label>
+          <input type="text" class="form-control" placeholder="Rua das Flores">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Complemento</label>
+          <input type="text" class="form-control" placeholder="Apto, Bloco, Casa...">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Bairro</label>
+          <input type="text" class="form-control" placeholder="Centro">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Cidade</label>
+          <input type="text" class="form-control" placeholder="Cachoeiro de Itapemirim">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Estado</label>
+          <select class="form-control">
+            <option>ES</option><option>RJ</option><option>SP</option><option>MG</option>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label">Ponto de Referência</label>
+          <input type="text" class="form-control" placeholder="Próximo ao ...">
+        </div>
+        <div class="form-group">
+          <label class="form-label req">Taxa de Entrega (R$)</label>
+          <input type="number" class="form-control" placeholder="0,00" min="0" step="0.50">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-novo-endereco')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-novo-endereco')">💾 Salvar Endereço</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('mobile-overlay');
+    sidebar.classList.toggle('mobile-open');
+    if (overlay) overlay.classList.toggle('mobile-overlay-show');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('mobile-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        overlay.classList.remove('mobile-overlay-show');
+      });
+    }
+  });
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  function filterTable(val) {
+    document.querySelectorAll('#tableClientes tbody tr').forEach(row => {
+      row.style.display = !val || row.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+</script>
+<div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;"></div>
+</body>
+</html>
